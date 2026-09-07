@@ -4,7 +4,9 @@ Interactive study notes for **Advanced Java (JSP)** covering theory, diagrams, T
 
 ## Live demo
 
-Deploy this folder to [Vercel](https://vercel.com) as a static site — no build step required.
+**https://jsp-notes.vercel.app**
+
+GitHub: **https://github.com/sagarh45/jsp-notes-unit-iii**
 
 ## Contents
 
