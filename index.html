@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unit-III Java Server Pages | Complete Notes</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">J</div>
+      <div>Unit-III · Java Server Pages <small>Advanced Java · Complete Notes + ICA Lab</small></div>
+    </div>
+    <label class="search">⌕ <input id="q" placeholder="Search topics in the sidebar…" /></label>
+    <div class="top-actions">
+      <button class="btn btn-ghost menu-toggle" id="menuBtn" type="button" aria-expanded="false" aria-controls="sidebar">Menu</button>
+      <button class="btn btn-ghost" id="resetSess">Reset simulator</button>
+      <a class="btn btn-gold" href="#tomcat">Tomcat 11</a>
+      <a class="btn btn-ghost" href="#ica">ICA</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+    <aside class="sidebar" id="sidebar">
+      <h4>Syllabus map</h4>
+      <a class="nav-link" href="#home"><span class="nav-num">★</span> Overview</a>
+      <a class="nav-link" href="#intro"><span class="nav-num">1</span> Introduction</a>
+      <a class="nav-link" href="#vs"><span class="nav-num">2</span> JSP vs Servlet</a>
+      <a class="nav-link" href="#life"><span class="nav-num">3</span> Life cycle</a>
+      <a class="nav-link" href="#elements"><span class="nav-num">4</span> JSP elements</a>
+      <a class="nav-link" href="#directives"><span class="nav-num">5</span> Directives</a>
+      <a class="nav-link" href="#tags"><span class="nav-num">6</span> Tags & implicit objects</a>
+      <a class="nav-link" href="#ex"><span class="nav-num">7</span> Exception handling</a>
+      <a class="nav-link" href="#scopes"><span class="nav-num">8</span> Scopes & API</a>
+      <a class="nav-link" href="#apps"><span class="nav-num">9</span> Real-life applications</a>
+      <a class="nav-link" href="#tomcat"><span class="nav-num">T</span> Tomcat 11 deploy</a>
+      <h4>Lab</h4>
+      <a class="nav-link" href="#ica"><span class="nav-num">P</span> ICA overview</a>
+      <a class="nav-link" href="#ica1"><span class="nav-num">1</span> ICA-1 Fundamentals</a>
+      <a class="nav-link" href="#ica2"><span class="nav-num">2</span> ICA-2 Implicit objects</a>
+      <a class="nav-link" href="#ica3"><span class="nav-num">3</span> ICA-3 Beans & tags</a>
+      <a class="nav-link" href="#ica4"><span class="nav-num">4</span> ICA-4 Exceptions</a>
+      <a class="nav-link" href="#exam"><span class="nav-num">★</span> Exam & viva</a>
+    </aside>
+
+    <main class="content">
+      <section class="hero" id="home">
+        <div class="kicker">Savitribai Phule Pune University / University pattern · Advanced Java</div>
+        <h1>Java Server Pages — complete in-depth notes</h1>
+        <p>
+          Theory, syntax of every important API, translation-to-servlet view, diagrams, real applications,
+          and runnable programs. Every lab has separate buttons:
+          <b>Trace</b> (flow only), <b>Source code</b> (files only), <b>Deploy</b> (Tomcat steps only),
+          and <b>Run online</b>.
+        </p>
+        <div class="chip-row">
+          <span class="chip">Introduction</span>
+          <span class="chip">JSP vs Servlet</span>
+          <span class="chip">Life cycle</span>
+          <span class="chip">Scriptlets · Expressions · Declarations</span>
+          <span class="chip">Directives</span>
+          <span class="chip">Action tags</span>
+          <span class="chip">Implicit objects</span>
+          <span class="chip">Exception handling</span>
+          <span class="chip">4 ICA practicals</span>
+        </div>
+        <div class="toc-mini">
+          <a href="#intro">Start reading</a>
+          <a href="#elements">JSP tags</a>
+          <a href="#tags">Implicit objects</a>
+          <a href="#ica">Open ICA lab</a>
+        </div>
+      </section>
+
+      <section class="section" id="syllabus-map">
+        <h2 class="section-title">Theory syllabus — all topics covered</h2>
+        <p class="lead">Every section follows the same format: <b>In simple words</b> → <b>Definition</b> → <b>Key points</b> → <b>Diagram explanation</b> → tables, syntax &amp; programs.</p>
+        <div class="grid-3">
+          <a class="card tight" href="#intro"><h4>1. Introduction</h4><p>What is JSP, features, architecture, request flow, pros &amp; cons</p></a>
+          <a class="card tight" href="#vs"><h4>2. JSP vs Servlet</h4><p>Differences, when to use which, MVC roles</p></a>
+          <a class="card tight" href="#life"><h4>3. Life cycle</h4><p>7 phases, jspInit, _jspService, jspDestroy</p></a>
+          <a class="card tight" href="#elements"><h4>4. JSP elements</h4><p>Scriptlet, expression, declaration, comments</p></a>
+          <a class="card tight" href="#directives"><h4>5. Directives</h4><p>page, include, taglib — all attributes</p></a>
+          <a class="card tight" href="#tags"><h4>6. Tags &amp; objects</h4><p>Action tags, 9 implicit objects, JavaBeans</p></a>
+          <a class="card tight" href="#ex"><h4>7. Exception handling</h4><p>try-catch, errorPage, web.xml</p></a>
+          <a class="card tight" href="#scopes"><h4>8. Scopes &amp; API</h4><p>4 scopes, cookies, JDBC, EL</p></a>
+          <a class="card tight" href="#apps"><h4>9. Real applications</h4><p>E-commerce, banking, ERP, hospital</p></a>
+        </div>
+      </section>
+
+      <!-- 1 INTRODUCTION -->
+      <section class="section" id="intro">
+        <h2 class="section-title">1. Introduction to Java Server Pages</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            JSP lets you write a web page that looks like HTML, but you can add small pieces of Java inside it.
+            When a user opens the page, the server runs the Java part, builds HTML, and sends it to the browser.
+            The browser never runs Java — it only shows the final HTML.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition (for exam)</strong>
+          Java Server Pages (JSP) is a server-side technology used to create dynamic web pages.
+          A JSP file contains HTML (or XML) plus special JSP tags and Java code.
+          The JSP container (like Jasper in Tomcat) translates the JSP into a servlet, compiles it, and runs it.
+          JSP is built on top of the Servlet API and is part of Java EE / Jakarta EE.
+        </div>
+
+        <div class="section-checklist">
+          <span>What is JSP</span>
+          <span>Why JSP exists</span>
+          <span>Features</span>
+          <span>Architecture</span>
+          <span>Request flow</span>
+          <span>Advantages &amp; disadvantages</span>
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li>JSP is a <b>view technology</b> — used to show HTML to the user.</li>
+            <li>Every JSP file is <b>converted into a servlet</b> by the container.</li>
+            <li>The file extension is <b>.jsp</b> (example: <code>hello.jsp</code>).</li>
+            <li>JSP runs on the <b>server</b>, not in the browser.</li>
+            <li>Tomcat uses <b>Jasper</b> as the JSP engine.</li>
+            <li>JSP can use <b>implicit objects</b> like <code>request</code>, <code>session</code>, <code>out</code> without creating them.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          Java Server Pages (JSP) is a server-side technology used to create dynamic web pages.
+          A JSP file looks like HTML, but it can contain Java code, directives and standard tags.
+          The container (Tomcat, GlassFish, Jetty) <b>translates</b> the JSP into a servlet, compiles it,
+          and then that servlet generates HTML for the browser.
+        </p>
+
+        <h3>1.1 Why JSP was introduced</h3>
+        <p>
+          Servlets are excellent controllers, but writing a full HTML page with <code>out.println("&lt;h1&gt;...")</code>
+          is painful to design and maintain. Designers cannot easily edit Java classes. JSP reverses the idea:
+          <b>HTML is the main file</b>; Java is inserted only where dynamic behaviour is needed.
+        </p>
+        <div class="grid-3">
+          <div class="card tight"><h4>Presentation</h4><p>JSP is the View in MVC. Product pages, result sheets, dashboards.</p></div>
+          <div class="card tight"><h4>Productivity</h4><p>Change a heading without recompiling by hand — the container recompiles the JSP.</p></div>
+          <div class="card tight"><h4>Reuse</h4><p>include, JavaBeans, tag libraries and JSTL keep business code out of the page.</p></div>
+        </div>
+
+        <h3>1.2 Features of JSP</h3>
+        <table>
+          <tr><th>Feature</th><th>Meaning</th></tr>
+          <tr><td>Built on servlets</td><td>Every JSP becomes a servlet. You get request, session, cookies, filters for free.</td></tr>
+          <tr><td>Automatic translation</td><td>First request (or precompile) generates <code>_jsp.java</code> then <code>_jsp.class</code>.</td></tr>
+          <tr><td>Implicit objects</td><td>request, response, out, session, application, config, pageContext, page, exception.</td></tr>
+          <tr><td>Directives &amp; actions</td><td>page, include, taglib plus <code>&lt;jsp:useBean&gt;</code>, include, forward…</td></tr>
+          <tr><td>JavaBeans / EL / JSTL</td><td>Industry pages avoid scriptlets and use beans + Expression Language.</td></tr>
+          <tr><td>Tag files &amp; custom tags</td><td>Reusable UI components (menus, date pickers, tables).</td></tr>
+          <tr><td>Error pages</td><td>Declarative exception handling with <code>errorPage</code> / <code>web.xml</code>.</td></tr>
+        </table>
+
+        <h3>1.3 JSP architecture</h3>
+        <p>
+          The browser never executes Java. It only sends HTTP and receives HTML/CSS/JS.
+          The <b>JSP container</b> (Jasper in Apache Tomcat) sits inside the servlet container.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-architecture.png" alt="JSP architecture: browser, JSP container, generated servlet, database" />
+          <figcaption>Figure 1 — JSP architecture (how browser, container, servlet and database work together)</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 1 (JSP architecture)</h4>
+          <ol>
+            <li><b>Browser (client)</b> — User opens a URL like <code>hello.jsp</code> and sends an HTTP request.</li>
+            <li><b>Web server / Tomcat</b> — Receives the request and passes it to the JSP container.</li>
+            <li><b>JSP container (Jasper)</b> — Reads the <code>.jsp</code> file, translates it to a servlet, and compiles it.</li>
+            <li><b>Generated servlet</b> — Runs Java code, talks to JavaBeans or database if needed.</li>
+            <li><b>HTML response</b> — Servlet writes HTML using <code>out</code> object and sends it back to the browser.</li>
+            <li><b>Browser displays</b> — User sees the final page. Java code never reaches the browser.</li>
+          </ol>
+        </div>
+
+        <h3>1.4 Request processing (what actually happens)</h3>
+        <ol>
+          <li>Client requests <code>http://host:8080/app/hello.jsp</code>.</li>
+          <li>If <code>hello.jsp</code> was never translated, Jasper creates <code>hello_jsp.java</code>.</li>
+          <li>Java compiler produces <code>hello_jsp.class</code>. Class is loaded and instantiated.</li>
+          <li><code>jspInit()</code> runs once. Then <code>_jspService(request, response)</code> runs for this request.</li>
+          <li>HTML is collected in a <code>JspWriter</code> buffer and returned as the HTTP response.</li>
+          <li>Later requests skip translation unless the <code>.jsp</code> file timestamp changed.</li>
+        </ol>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-translation.png" alt="JSP translation pipeline from jsp to java to class to HTML" />
+          <figcaption>Figure 2 — Translation pipeline (.jsp → .java → .class → HTML output)</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 2 (Translation pipeline)</h4>
+          <ol>
+            <li><b>Step 1 — JSP file</b> — You write <code>hello.jsp</code> with HTML and JSP tags.</li>
+            <li><b>Step 2 — Translation</b> — Jasper creates <code>hello_jsp.java</code> (a servlet source file).</li>
+            <li><b>Step 3 — Compilation</b> — Java compiler creates <code>hello_jsp.class</code> (bytecode).</li>
+            <li><b>Step 4 — Execution</b> — Container calls <code>_jspService()</code> method for each request.</li>
+            <li><b>Step 5 — Output</b> — HTML is sent to the browser as HTTP response.</li>
+            <li><b>Note:</b> Translation happens only when the JSP is new or modified. After that, only the compiled class runs (faster).</li>
+          </ol>
+        </div>
+
+        <h3>1.5 Advantages and disadvantages</h3>
+        <div class="grid-2">
+          <div class="card">
+            <h4>Advantages</h4>
+            <ul>
+              <li>Faster UI development than pure servlets.</li>
+              <li>Separation of static design and dynamic logic (especially with beans/JSTL).</li>
+              <li>Portable across any servlet container.</li>
+              <li>Access to entire Java ecosystem (JDBC, mail, JSON, etc.).</li>
+              <li>Session tracking, cookies, filters, listeners already exist.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h4>Disadvantages / cautions</h4>
+            <ul>
+              <li>Heavy scriptlets make pages unreadable (avoid in production).</li>
+              <li>First request is slower because of translation/compilation.</li>
+              <li>Debugging generated servlet names is less obvious than a hand-written servlet.</li>
+              <li>Mixing business logic in JSP breaks MVC and unit testing.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout exam">
+          <strong>Exam pointer</strong>
+          Write: “JSP is internally converted into a servlet by the JSP container. Therefore JSP can do everything a servlet can, but it is intended as a view technology.”
+        </div>
+
+        <div class="example-lab" data-example="hello">
+          <div class="lab-head">
+            <div><span class="tag">Program 1.1</span><h4>Hello JSP — first dynamic page</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Change the <code>name</code> parameter, then use Run online. Trace shows translation into <code>_jspService</code>.</p>
+            <div class="params"><label>name <input data-param="name" value="Sagar" /></label></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 JSP VS SERVLET -->
+      <section class="section" id="vs">
+        <h2 class="section-title">2. Difference between JSP and Servlet</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            A <b>servlet</b> is a Java class that handles web requests. A <b>JSP</b> is a page file that becomes a servlet automatically.
+            They do the same job inside Tomcat, but JSP is easier for writing HTML. In real projects: servlet = controller (logic), JSP = view (display).
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          A servlet is a Java program that extends <code>HttpServlet</code> and handles HTTP requests directly.
+          A JSP is a text page (.jsp) that the container converts into a servlet. Both run on the server and produce HTML.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li>Servlet = <b>Java file</b> (.java). JSP = <b>page file</b> (.jsp).</li>
+            <li>Servlet uses <code>doGet()</code> / <code>doPost()</code>. JSP uses <code>_jspService()</code> after translation.</li>
+            <li>Writing HTML in servlet = many <code>out.println()</code> lines (hard to design).</li>
+            <li>Writing HTML in JSP = normal HTML with small Java pieces (easy to design).</li>
+            <li>Both have the <b>same performance</b> after JSP is compiled.</li>
+            <li>MVC pattern: <b>Servlet → controller</b>, <b>JSP → view</b>.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          A servlet is a Java class that handles HTTP. A JSP is a document that <em>becomes</em> such a class.
+          They are not rivals — they are layers. Industry practice: <b>Servlet = controller</b>, <b>JSP = view</b>.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-vs-servlet.png" alt="Side by side JSP versus Servlet" />
+          <figcaption>Figure 3 — Servlet (Java-first) vs JSP (HTML-first). Both end up as servlet classes in Tomcat.</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 3 (JSP vs Servlet)</h4>
+          <ul>
+            <li><b>Left side (Servlet)</b> — Programmer writes Java class. HTML is printed using <code>out.println()</code>.</li>
+            <li><b>Right side (JSP)</b> — Programmer writes HTML page. Java is added only where needed using tags.</li>
+            <li><b>Same container</b> — Both run inside Tomcat and use request, response, session objects.</li>
+            <li><b>Same result</b> — Browser receives HTML in both cases.</li>
+            <li><b>Best practice</b> — Use servlet for control logic; use JSP for showing data to the user.</li>
+          </ul>
+        </div>
+
+        <table>
+          <tr><th>Point</th><th>Servlet</th><th>JSP</th></tr>
+          <tr><td>Nature</td><td>Java class extending <code>HttpServlet</code></td><td>Text file with HTML + JSP tags (<code>.jsp</code>)</td></tr>
+          <tr><td>Coding style</td><td>Java with embedded HTML strings</td><td>HTML with embedded Java / tags</td></tr>
+          <tr><td>Who writes it</td><td>Java programmer</td><td>Page designer + programmer</td></tr>
+          <tr><td>Translation</td><td>You compile <code>.java</code> yourself</td><td>Container generates servlet automatically</td></tr>
+          <tr><td>Methods</td><td><code>doGet</code>, <code>doPost</code>, <code>service</code></td><td><code>jspInit</code>, <code>_jspService</code>, <code>jspDestroy</code></td></tr>
+          <tr><td>Implicit objects</td><td>You create <code>PrintWriter out = response.getWriter()</code></td><td>ready-made <code>out</code>, <code>session</code>, …</td></tr>
+          <tr><td>Request protocol</td><td>You override doGet/doPost separately</td><td><code>_jspService</code> handles GET and POST</td></tr>
+          <tr><td>MVC role</td><td>Controller / sometimes model glue</td><td>View (presentation)</td></tr>
+          <tr><td>Speed (after warmup)</td><td>Same (both bytecode)</td><td>Same after translation; first hit slower</td></tr>
+          <tr><td>HTML maintenance</td><td>Hard</td><td>Easy</td></tr>
+          <tr><td>Business logic</td><td>Natural place (or better: beans/services)</td><td>Should be avoided in scriptlets</td></tr>
+          <tr><td>Error handling</td><td>try/catch, <code>web.xml</code></td><td>plus <code>errorPage</code> / <code>isErrorPage</code></td></tr>
+        </table>
+
+        <h3>2.1 Same job, different source</h3>
+        <div class="grid-2">
+          <div>
+            <p><b>Servlet equivalent</b></p>
+            <pre class="syntax"><span class="k">public void</span> doGet(HttpServletRequest req, HttpServletResponse res) {
+  res.setContentType(<span class="s">"text/html"</span>);
+  PrintWriter out = res.getWriter();
+  String n = req.getParameter(<span class="s">"name"</span>);
+  out.println(<span class="s">"&lt;h1&gt;Hello "</span> + n + <span class="s">"&lt;/h1&gt;"</span>);
+}</pre>
+          </div>
+          <div>
+            <p><b>JSP equivalent</b></p>
+            <pre class="syntax">&lt;%@ page contentType=<span class="s">"text/html"</span> %&gt;
+&lt;h1&gt;Hello &lt;%= request.getParameter(<span class="s">"name"</span>) %&gt;&lt;/h1&gt;</pre>
+          </div>
+        </div>
+        <p>After translation the JSP version becomes almost the same servlet. That is why performance is comparable.</p>
+
+        <h3>2.2 When to use which</h3>
+        <div class="grid-2">
+          <div class="callout ok"><strong>Use a servlet</strong> for login authentication, file upload control, REST-like endpoints, redirect logic, and as the Front Controller in MVC.</div>
+          <div class="callout def"><strong>Use a JSP</strong> to render HTML: reports, catalogs, dashboards, confirmation pages, error views.</div>
+        </div>
+      </section>
+
+      <!-- 3 LIFE CYCLE -->
+      <section class="section" id="life">
+        <h2 class="section-title">3. Life cycle of JSP</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            JSP life cycle means: what steps happen from the time you write a <code>.jsp</code> file
+            until it serves many user requests and finally gets removed. The main method that runs for every request is <code>_jspService()</code>.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          JSP life cycle is the sequence of phases a JSP page goes through:
+          translation, compilation, loading, instantiation, initialization (<code>jspInit</code>),
+          request processing (<code>_jspService</code>), and destruction (<code>jspDestroy</code>).
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember (7 phases)</h4>
+          <ol>
+            <li><b>Translation</b> — .jsp → .java (done by Jasper engine)</li>
+            <li><b>Compilation</b> — .java → .class (done by Java compiler)</li>
+            <li><b>Loading</b> — Class is loaded into JVM memory</li>
+            <li><b>Instantiation</b> — Object of servlet class is created</li>
+            <li><b>Initialization</b> — <code>jspInit()</code> runs once</li>
+            <li><b>Service</b> — <code>_jspService()</code> runs for every request (most important)</li>
+            <li><b>Destruction</b> — <code>jspDestroy()</code> runs when JSP is removed or server stops</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          The JSP life cycle is the servlet life cycle plus an extra <b>translation</b> phase.
+          Remember seven names for university answers: translation, compilation, loading, instantiation, initialization, request processing, destruction.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-lifecycle.png" alt="JSP life cycle stages" />
+          <figcaption>Figure 4 — Complete JSP life cycle from first request to destroy</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 4 (Life cycle)</h4>
+          <ol>
+            <li><b>First request</b> — Triggers translation and compilation (slower first time).</li>
+            <li><b>jspInit()</b> — Runs one time only, like servlet <code>init()</code>. Use for setup work.</li>
+            <li><b>_jspService()</b> — Runs every time a user opens the page. Your scriptlets and HTML go here.</li>
+            <li><b>Loop arrow</b> — Many users can call _jspService at the same time (multi-threaded).</li>
+            <li><b>jspDestroy()</b> — Runs when JSP is updated, app is undeployed, or server shuts down.</li>
+            <li><b>Exam tip:</b> Only <code>_jspService()</code> repeats for each request. Other steps happen once per JSP version.</li>
+          </ol>
+        </div>
+
+        <div class="svg-wrap">
+          <svg viewBox="0 0 1100 210" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Lifecycle strip">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#0d7377"/><stop offset="1" stop-color="#e8a317"/></linearGradient>
+            </defs>
+            <rect x="8" y="50" width="140" height="70" rx="14" fill="#0f2744"/>
+            <text x="78" y="80" fill="#fff" text-anchor="middle" font-size="13" font-family="IBM Plex Sans">1 Translate</text>
+            <text x="78" y="100" fill="#f3c56b" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">.jsp → .java</text>
+            <rect x="168" y="50" width="140" height="70" rx="14" fill="#16345a"/>
+            <text x="238" y="80" fill="#fff" text-anchor="middle" font-size="13" font-family="IBM Plex Sans">2 Compile</text>
+            <text x="238" y="100" fill="#f3c56b" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">.java → .class</text>
+            <rect x="328" y="50" width="140" height="70" rx="14" fill="#0d7377"/>
+            <text x="398" y="80" fill="#fff" text-anchor="middle" font-size="13" font-family="IBM Plex Sans">3 Load + new</text>
+            <text x="398" y="100" fill="#fff" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">Class.forName</text>
+            <rect x="488" y="50" width="160" height="70" rx="14" fill="#14919b"/>
+            <text x="568" y="80" fill="#fff" text-anchor="middle" font-size="13" font-family="IBM Plex Sans">4 jspInit()</text>
+            <text x="568" y="100" fill="#fff" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">once</text>
+            <rect x="668" y="40" width="200" height="90" rx="14" fill="url(#g)"/>
+            <text x="768" y="78" fill="#0f2744" text-anchor="middle" font-size="13" font-family="IBM Plex Sans" font-weight="700">5 _jspService()</text>
+            <text x="768" y="100" fill="#0f2744" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">every request (loop)</text>
+            <rect x="888" y="50" width="190" height="70" rx="14" fill="#c0392b"/>
+            <text x="983" y="80" fill="#fff" text-anchor="middle" font-size="13" font-family="IBM Plex Sans">6 jspDestroy()</text>
+            <text x="983" y="100" fill="#fff" text-anchor="middle" font-size="11" font-family="IBM Plex Sans">unload / shutdown</text>
+          </svg>
+        </div>
+
+        <h3>3.1 Phase-by-phase theory</h3>
+        <table>
+          <tr><th>Phase</th><th>Who does it</th><th>What is created / called</th><th>How many times</th></tr>
+          <tr><td>Translation</td><td>JSP engine (Jasper)</td><td>Servlet source, typically <code>xxx_jsp.java</code></td><td>When JSP is new or modified</td></tr>
+          <tr><td>Compilation</td><td>Java compiler</td><td><code>xxx_jsp.class</code></td><td>After translation</td></tr>
+          <tr><td>Loading</td><td>JVM class loader</td><td>Class bytes in memory</td><td>Once per class version</td></tr>
+          <tr><td>Instantiation</td><td>Container</td><td><code>new xxx_jsp()</code></td><td>Usually one instance (like servlet)</td></tr>
+          <tr><td>Initialization</td><td>Container</td><td><code>jspInit()</code></td><td>Once</td></tr>
+          <tr><td>Service</td><td>Container thread</td><td><code>_jspService(req, res)</code></td><td>Once per request (many threads)</td></tr>
+          <tr><td>Destruction</td><td>Container</td><td><code>jspDestroy()</code></td><td>Once, before GC / reload</td></tr>
+        </table>
+
+        <h3>3.2 Life-cycle methods — syntax and mapping</h3>
+        <pre class="syntax"><span class="c">// Generated servlet extends HttpJspBase (which extends HttpServlet)</span>
+<span class="k">public void</span> jspInit() { <span class="c">/* open DB pool, read config */</span> }
+
+<span class="k">public void</span> _jspService(HttpServletRequest request,
+                        HttpServletResponse response)
+             <span class="k">throws</span> ServletException, IOException {
+  <span class="c">/* YOUR HTML + scriptlets + expressions are copied here */</span>
+}
+
+<span class="k">public void</span> jspDestroy() { <span class="c">/* close resources */</span> }</pre>
+        <table>
+          <tr><th>JSP method</th><th>Servlet method</th><th>You may override?</th><th>Typical use</th></tr>
+          <tr><td><code>jspInit()</code></td><td><code>init()</code></td><td>Yes, using a declaration <code>&lt;%! %&gt;</code></td><td>Load lookup data, start counters</td></tr>
+          <tr><td><code>_jspService()</code></td><td><code>service()</code> / doGet+doPost</td><td><b>Never</b> — generated. Your scriptlets already live inside it.</td><td>Build the page</td></tr>
+          <tr><td><code>jspDestroy()</code></td><td><code>destroy()</code></td><td>Yes, via <code>&lt;%! %&gt;</code></td><td>Close files, JDBC, threads</td></tr>
+        </table>
+
+        <div class="callout warn">
+          <strong>Important</strong>
+          You cannot write <code>void _jspService(...){}</code> yourself in a JSP. The engine always generates it.
+          Declarations (<code>&lt;%! %&gt;</code>) become class fields/methods; that is how you hook <code>jspInit</code> / <code>jspDestroy</code>.
+        </div>
+
+        <pre class="syntax">&lt;%!
+  <span class="k">public void</span> jspInit() {
+    <span class="c">// runs once after instantiation</span>
+  }
+  <span class="k">public void</span> jspDestroy() {
+    <span class="c">// runs once on unload</span>
+  }
+%&gt;</pre>
+
+        <h3>3.3 Threading</h3>
+        <p>
+          By default a JSP is <b>not single-threaded</b>: many requests share one instance, so instance variables
+          declared with <code>&lt;%! %&gt;</code> must be thread-safe (or avoided). The old attribute
+          <code>isThreadSafe="false"</code> implements <code>SingleThreadModel</code> and is <b>deprecated</b> — do not use it in new work.
+        </p>
+
+        <div class="example-lab" data-example="declaration_counter">
+          <div class="lab-head">
+            <div><span class="tag gold">Program 3.1</span><h4>Life-cycle visible: declaration counter + application hits</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Click <b>Run online</b> several times. Application hit count increases. Trace lists jspInit then repeated _jspService steps.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4 ELEMENTS -->
+      <section class="section" id="elements">
+        <h2 class="section-title">4. JSP elements — scriptlets, expressions, declarations</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            JSP elements are special tags where you write Java code inside an HTML page.
+            There are three main types: <b>scriptlet</b> (Java statements), <b>expression</b> (print a value),
+            and <b>declaration</b> (variables and methods at class level). Directives and comments are also JSP elements.
+          </p>
+        </div>
+
+        <div class="def-box">
+          <dl class="def-item">
+            <dt>Scriptlet — &lt;% ... %&gt;</dt>
+            <dd>Java statements copied inside <code>_jspService()</code>. Used for loops, if-else, and local variables.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>Expression — &lt;%= ... %&gt;</dt>
+            <dd>Evaluates a Java expression and prints the result. Becomes <code>out.print(...)</code>. No semicolon allowed.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>Declaration — &lt;%! ... %&gt;</dt>
+            <dd>Fields and methods at servlet class level. Used for counters, helper methods, jspInit/jspDestroy.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>Comment — &lt;%-- ... --%&gt;</dt>
+            <dd>Removed completely. Not visible in browser or in generated servlet output.</dd>
+          </dl>
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li>Scriptlet → goes inside <code>_jspService()</code> method.</li>
+            <li>Expression → becomes <code>out.print(value);</code> — must return a value, no semicolon.</li>
+            <li>Declaration → becomes class member (field or method) — shared across requests.</li>
+            <li>HTML text → becomes <code>out.write("...")</code> in the servlet.</li>
+            <li>Do not write business logic in scriptlets in real projects — use JavaBeans and JSTL instead.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          Template text (HTML) is written as-is. Dynamic parts use four scripting elements plus comments.
+          All of them are processed at <b>translation time</b> into Java source.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-elements.png" alt="Four JSP element types" />
+          <figcaption>Figure 5 — Four JSP scripting elements and where they go in the generated servlet</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 5 (JSP elements)</h4>
+          <ol>
+            <li><b>HTML / template text</b> — Written directly. Converted to <code>out.write()</code> calls.</li>
+            <li><b>Scriptlet &lt;% %&gt;</b> — Java code block placed inside <code>_jspService()</code>.</li>
+            <li><b>Expression &lt;%= %&gt;</b> — Short way to print a value on the page.</li>
+            <li><b>Declaration &lt;%! %&gt;</b> — Placed outside _jspService, at the top of the servlet class.</li>
+            <li><b>Directive &lt;%@ %&gt;</b> — Instructions for the translator (page settings, imports).</li>
+          </ol>
+        </div>
+
+        <table>
+          <tr><th>Element</th><th>Syntax</th><th>Goes to</th><th>Semicolon?</th></tr>
+          <tr><td>Scriptlet</td><td><code>&lt;%  java statements  %&gt;</code></td><td>inside <code>_jspService</code></td><td>Yes, as in Java</td></tr>
+          <tr><td>Expression</td><td><code>&lt;%=  java expression  %&gt;</code></td><td><code>out.print(expr);</code></td><td><b>No</b></td></tr>
+          <tr><td>Declaration</td><td><code>&lt;%!  fields / methods  %&gt;</code></td><td>servlet class body</td><td>Yes</td></tr>
+          <tr><td>Comment</td><td><code>&lt;%--  text  --%&gt;</code></td><td>discarded</td><td>—</td></tr>
+          <tr><td>Directive</td><td><code>&lt;%@  name attrs  %&gt;</code></td><td>servlet header / class signature</td><td>—</td></tr>
+        </table>
+
+        <h3>4.1 Scriptlets</h3>
+        <div class="callout def"><strong>Definition</strong> A scriptlet is a fragment of Java that is copied verbatim into <code>_jspService</code>. Use it for loops, if/else, local variables and calling implicit objects.</div>
+        <pre class="syntax">&lt;%
+  <span class="k">int</span> i;
+  <span class="k">for</span> (i = 1; i &lt;= 5; i++) {
+    out.println(i);
+  }
+%&gt;</pre>
+        <p><b>Translated servlet fragment:</b></p>
+        <pre class="syntax"><span class="k">int</span> i;
+<span class="k">for</span> (i = 1; i &lt;= 5; i++) {
+  out.println(i);
+}</pre>
+        <ul>
+          <li>Local variables of scriptlets are <b>request-scoped</b> (new stack frame every call).</li>
+          <li>You may open a block in one scriptlet and close it in another, because they concatenate — this is legal but ugly.</li>
+          <li>Do not declare methods inside scriptlets (methods cannot nest in Java).</li>
+        </ul>
+        <div class="example-lab" data-example="scriptlet_table">
+          <div class="lab-head">
+            <div><span class="tag">Program 4.1</span><h4>Scriptlet loop — multiplication table</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Scriptlet uses <code>Integer.parseInt</code> and <code>for</code>. Trace shows each JSP piece mapped into <code>_jspService</code>.</p>
+            <div class="params"><label>n <input data-param="n" value="12" /></label></div>
+          </div>
+        </div>
+
+        <h3>4.2 Expressions</h3>
+        <div class="callout def"><strong>Definition</strong> A JSP expression evaluates a Java expression, converts the result to <code>String</code>, and writes it to the client.</div>
+        <pre class="syntax">&lt;%= request.getParameter(<span class="s">"user"</span>) %&gt;
+&lt;%= <span class="k">new</span> java.util.Date() %&gt;
+&lt;%= a + b %&gt;
+&lt;%= Math.max(3, 9) %&gt;</pre>
+        <p><b>Becomes:</b> <code>out.print(request.getParameter("user"));</code></p>
+        <table>
+          <tr><th>Rule</th><th>Example</th></tr>
+          <tr><td>No semicolon</td><td><code>&lt;%= x; %&gt;</code> is illegal</td></tr>
+          <tr><td>Must yield a value</td><td><code>&lt;%= out.println(x) %&gt;</code> is wrong (<code>println</code> returns void)</td></tr>
+          <tr><td>null prints nothing</td><td>Container writes empty string, not the word null (classic JSP)</td></tr>
+          <tr><td>HTML context</td><td>Escape user data in real apps to prevent XSS</td></tr>
+        </table>
+        <div class="example-lab" data-example="expression_calc">
+          <div class="lab-head">
+            <div><span class="tag">Program 4.2</span><h4>Expressions — arithmetic and String methods</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>a <input data-param="a" value="25" /></label>
+              <label>b <input data-param="b" value="4" /></label>
+            </div>
+          </div>
+        </div>
+
+        <h3>4.3 Declarations</h3>
+        <div class="callout def"><strong>Definition</strong> A declaration inserts Java members (fields, methods, inner classes, <code>jspInit</code>) at <b>class</b> level of the generated servlet.</div>
+        <pre class="syntax">&lt;%!
+  <span class="k">int</span> visit;
+  <span class="k">static</span> <span class="k">final</span> <span class="k">double</span> PI = 3.14159;
+
+  <span class="k">int</span> square(<span class="k">int</span> n) {
+    <span class="k">return</span> n * n;
+  }
+%&gt;
+Square of 12 = &lt;%= square(12) %&gt;</pre>
+        <table>
+          <tr><th>Scriptlet variable</th><th>Declaration variable</th></tr>
+          <tr><td>Local to <code>_jspService</code></td><td>Instance (or static) field</td></tr>
+          <tr><td>Reset every request</td><td>Survives across requests on the same servlet instance</td></tr>
+          <tr><td>Thread-safe automatically</td><td>Shared — needs synchronization if mutated</td></tr>
+          <tr><td>Cannot be a method</td><td>Can declare methods</td></tr>
+        </table>
+        <div class="callout warn"><strong>Interview trap</strong> A counter in <code>&lt;% int c=0; c++; %&gt;</code> always prints 1. Move <code>int c=0;</code> to <code>&lt;%! %&gt;</code> to count visits (still not accurate under clustering).</div>
+
+        <h3>4.4 Comments</h3>
+        <table>
+          <tr><th>Type</th><th>Syntax</th><th>Visible in HTML source?</th><th>Visible in generated servlet?</th></tr>
+          <tr><td>JSP comment</td><td><code>&lt;%-- ... --%&gt;</code></td><td>No</td><td>No</td></tr>
+          <tr><td>HTML comment</td><td><code>&lt;!-- ... --&gt;</code></td><td>Yes</td><td>Yes, as <code>out.write</code></td></tr>
+          <tr><td>Java comment</td><td><code>&lt;% // ... %&gt;</code></td><td>No</td><td>Yes, inside servlet</td></tr>
+        </table>
+        <div class="example-lab" data-example="comments_mix">
+          <div class="lab-head">
+            <div><span class="tag">Program 4.3</span><h4>JSP comment vs HTML comment</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Run online, then Trace: the JSP comment never becomes <code>out.write</code>.</p>
+          </div>
+        </div>
+
+        <h3>4.5 XML-style scripting (optional syllabus)</h3>
+        <pre class="syntax">&lt;jsp:scriptlet&gt; int x = 10; &lt;/jsp:scriptlet&gt;
+&lt;jsp:expression&gt; x * 2 &lt;/jsp:expression&gt;
+&lt;jsp:declaration&gt; int visits; &lt;/jsp:declaration&gt;
+&lt;jsp:directive.page import=<span class="s">"java.util.*"</span> /&gt;
+&lt;jsp:text&gt; template text &lt;/jsp:text&gt;</pre>
+        <p>Used when the JSP itself must be well-formed XML. Classic <code>&lt;% %&gt;</code> syntax is what ICA and theory papers expect.</p>
+      </section>
+
+      <!-- 5 DIRECTIVES -->
+      <section class="section" id="directives">
+        <h2 class="section-title">5. JSP directives</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            Directives are instructions to the JSP translator. They do not print anything on the page.
+            They tell the container how to build the servlet — for example: import Java packages, set content type, or include another file.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          A JSP directive has the syntax <code>&lt;%@ directiveName attribute="value" %&gt;</code>.
+          It is processed at translation time (before the page runs). Three standard directives: <b>page</b>, <b>include</b>, and <b>taglib</b>.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>page directive</b> — Sets page properties: import, contentType, session, errorPage, isErrorPage.</li>
+            <li><b>include directive</b> — Pastes another file at translation time (static include). One servlet is created.</li>
+            <li><b>taglib directive</b> — Registers custom or JSTL tag libraries (example: <code>c:forEach</code>).</li>
+            <li>Directives never appear in HTML output — they only affect servlet generation.</li>
+            <li><code>errorPage</code> and <code>isErrorPage</code> are page directive attributes used for exception handling.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          Directives are messages to the translator. They do not produce output by themselves.
+          Three standard directives: <b>page</b>, <b>include</b>, <b>taglib</b>.
+        </p>
+        <pre class="syntax">&lt;%@ <span class="t">directiveName</span> attribute=<span class="s">"value"</span> attribute2=<span class="s">"value"</span> %&gt;</pre>
+
+        <div class="def-box">
+          <dl class="def-item">
+            <dt>page directive — &lt;%@ page ... %&gt;</dt>
+            <dd>Defines page settings: language, imports, contentType, session, buffer, errorPage, isErrorPage.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>include directive — &lt;%@ include file="..." %&gt;</dt>
+            <dd>Static include. File content is pasted before compilation. One servlet is generated.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>taglib directive — &lt;%@ taglib prefix="c" uri="..." %&gt;</dt>
+            <dd>Registers a tag library (JSTL or custom tags) so you can use tags like &lt;c:if&gt;.</dd>
+          </dl>
+        </div>
+
+        <h3>5.1 page directive — every important attribute</h3>
+        <pre class="syntax">&lt;%@ page language=<span class="s">"java"</span>
+         import=<span class="s">"java.util.*,java.sql.*"</span>
+         contentType=<span class="s">"text/html; charset=UTF-8"</span>
+         pageEncoding=<span class="s">"UTF-8"</span>
+         session=<span class="s">"true"</span>
+         buffer=<span class="s">"8kb"</span>
+         autoFlush=<span class="s">"true"</span>
+         isThreadSafe=<span class="s">"true"</span>
+         info=<span class="s">"Student result view"</span>
+         errorPage=<span class="s">"error.jsp"</span>
+         isErrorPage=<span class="s">"false"</span>
+         isELIgnored=<span class="s">"false"</span>
+         extends=<span class="s">"org.apache.jasper.runtime.HttpJspBase"</span>
+         trimDirectiveWhitespaces=<span class="s">"true"</span> %&gt;</pre>
+        <table>
+          <tr><th>Attribute</th><th>Default</th><th>Description</th></tr>
+          <tr><td><code>language</code></td><td>java</td><td>Scripting language. In practice only <code>java</code> is supported.</td></tr>
+          <tr><td><code>import</code></td><td>java.lang.*, servlet, jsp packages</td><td>Comma-separated Java imports. Only page attribute allowed more than once.</td></tr>
+          <tr><td><code>contentType</code></td><td>text/html;charset=ISO-8859-1</td><td>MIME type + charset of the response. Same idea as <code>response.setContentType</code>.</td></tr>
+          <tr><td><code>pageEncoding</code></td><td>ISO-8859-1</td><td>How the <b>source file</b> is read.</td></tr>
+          <tr><td><code>session</code></td><td>true</td><td>If false, implicit <code>session</code> object is not created. Saves memory for static pages.</td></tr>
+          <tr><td><code>buffer</code></td><td>8kb (impl-defined)</td><td>Output buffer size. <code>none</code> writes directly to the response.</td></tr>
+          <tr><td><code>autoFlush</code></td><td>true</td><td>Flush buffer when full. If false and buffer overflows → exception.</td></tr>
+          <tr><td><code>isThreadSafe</code></td><td>true</td><td>false ⇒ SingleThreadModel (deprecated).</td></tr>
+          <tr><td><code>info</code></td><td>—</td><td>String returned by <code>Servlet.getServletInfo()</code>.</td></tr>
+          <tr><td><code>errorPage</code></td><td>—</td><td>Relative URL of a JSP that handles uncaught exceptions from this page.</td></tr>
+          <tr><td><code>isErrorPage</code></td><td>false</td><td>true ⇒ this page may use implicit object <code>exception</code>.</td></tr>
+          <tr><td><code>isELIgnored</code></td><td>false (JSP 2.0+)</td><td>true disables <code>${...}</code> Expression Language.</td></tr>
+          <tr><td><code>extends</code></td><td>container base class</td><td>Rarely used. Superclass of generated servlet.</td></tr>
+          <tr><td><code>trimDirectiveWhitespaces</code></td><td>false</td><td>Removes extra blank lines caused by directives (cleaner HTML).</td></tr>
+        </table>
+        <div class="example-lab" data-example="page_import">
+          <div class="lab-head">
+            <div><span class="tag">Program 5.1</span><h4>page directive — import, session, info</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body"><p class="lab-meta">Trace the directive: it appears as a comment / header in the generated servlet, not as runtime output.</p></div>
+        </div>
+
+        <h3>5.2 include directive (static include)</h3>
+        <pre class="syntax">&lt;%@ include file=<span class="s">"header.jsp"</span> %&gt;
+&lt;%@ include file=<span class="s">"WEB-INF/fragments/footer.html"</span> %&gt;</pre>
+        <p>
+          The file is <b>pasted into this JSP before compilation</b>. One servlet is generated.
+          Changes to the included file may require touching the parent JSP, depending on the server.
+          Use it for copyright, common constants, taglib headers.
+        </p>
+        <div class="example-lab" data-example="include_static">
+          <div class="lab-head">
+            <div><span class="tag">Program 5.2</span><h4>Static include of header + footer</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params"><label>user <input data-param="user" value="WIT Student" /></label></div>
+          </div>
+        </div>
+
+        <h3>5.3 taglib directive</h3>
+        <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
+&lt;%@ taglib prefix=<span class="s">"sql"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/sql"</span> %&gt;
+&lt;%@ taglib prefix=<span class="s">"fmt"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/fmt"</span> %&gt;
+&lt;%@ taglib prefix=<span class="s">"my"</span> uri=<span class="s">"/WEB-INF/tlds/college.tld"</span> %&gt;</pre>
+        <table>
+          <tr><th>Attribute</th><th>Description</th></tr>
+          <tr><td><code>prefix</code></td><td>Short name used in tags, e.g. <code>&lt;c:forEach&gt;</code></td></tr>
+          <tr><td><code>uri</code></td><td>Unique identifier matching a TLD (not necessarily a download URL)</td></tr>
+          <tr><td><code>tagdir</code> (JSP 2.0)</td><td>Folder of <code>.tag</code> files, e.g. <code>/WEB-INF/tags</code></td></tr>
+        </table>
+        <pre class="syntax">&lt;c:if test=<span class="s">"${sessionScope.user != null}"</span>&gt;
+  Hello ${sessionScope.user}
+&lt;/c:if&gt;</pre>
+        <p>JSTL replaces most scriptlets in modern JSP. ICA still expects you to know classic elements first.</p>
+      </section>
+
+      <!-- 6 TAGS + IMPLICIT -->
+      <section class="section" id="tags">
+        <h2 class="section-title">6. JSP basic tags (actions) and implicit objects</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            <b>Action tags</b> (like <code>jsp:useBean</code>, <code>jsp:include</code>) run at request time and help with beans, includes, and forwards.
+            <b>Implicit objects</b> are ready-made Java objects (request, session, out, etc.) that Tomcat creates for you — no need to declare them.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition — Implicit object</strong>
+          An implicit object is a Java object automatically available inside a JSP page.
+          The container creates them in <code>_jspService()</code>. Examples: <code>request</code>, <code>response</code>, <code>session</code>, <code>application</code>, <code>out</code>.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>9 implicit objects:</b> request, response, out, session, application, config, pageContext, page, exception.</li>
+            <li><b>useBean</b> — Creates or finds a JavaBean in page/request/session/application scope.</li>
+            <li><b>setProperty</b> — Sets bean values from form/URL parameters.</li>
+            <li><b>getProperty</b> — Reads and prints a bean property.</li>
+            <li><b>jsp:include</b> — Includes another page at runtime (dynamic).</li>
+            <li><b>include directive</b> — Pastes file at compile time (static) — different from jsp:include.</li>
+            <li><b>jsp:forward</b> — Sends request to another page; browser URL does not change.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          <b>Action tags</b> are XML-style instructions executed at request time.
+          <b>Implicit objects</b> are Java objects the container creates for you inside <code>_jspService</code>.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-action-tags.png" alt="JSP action tags and JavaBeans MVC" />
+          <figcaption>Figure 6 — MVC pattern: servlet/controller → JavaBean/model → JSP/view with action tags</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 6 (Action tags &amp; MVC)</h4>
+          <ol>
+            <li><b>Browser</b> — Sends request with form data or URL parameters.</li>
+            <li><b>Controller (Servlet)</b> — Validates input, talks to database, stores data in beans.</li>
+            <li><b>Model (JavaBean)</b> — Holds data (Student, Cart, Employee). Created with <code>jsp:useBean</code>.</li>
+            <li><b>View (JSP)</b> — Displays data using <code>jsp:getProperty</code> or expressions.</li>
+            <li><b>include / forward</b> — Reuse header, footer, or send user to another page.</li>
+          </ol>
+        </div>
+
+        <h3>6.1 Standard action tags — syntax catalogue</h3>
+        <table>
+          <tr><th>Tag</th><th>Syntax</th><th>Description</th></tr>
+          <tr>
+            <td><code>jsp:include</code></td>
+            <td><code>&lt;jsp:include page="x.jsp" flush="true"/&gt;</code></td>
+            <td>Runtime include. The included resource executes and its output is inserted. <code>flush</code> flushes the buffer first.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:forward</code></td>
+            <td><code>&lt;jsp:forward page="ok.jsp"/&gt;</code></td>
+            <td>Stops current page and dispatches to another resource on the server. Browser URL does not change.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:param</code></td>
+            <td><code>&lt;jsp:param name="city" value="Pune"/&gt;</code></td>
+            <td>Nested inside include/forward to pass extra request parameters.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:useBean</code></td>
+            <td><code>&lt;jsp:useBean id="s" class="beans.Student" scope="session"/&gt;</code></td>
+            <td>Find or create a JavaBean in the given scope and expose it as scripting variable <code>s</code>.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:setProperty</code></td>
+            <td><code>&lt;jsp:setProperty name="s" property="*"/&gt;</code></td>
+            <td>Sets bean setters from request params. <code>property="*"</code> maps all matching names. Or <code>property="name" param="sname"</code> / <code>value="Aditi"</code>.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:getProperty</code></td>
+            <td><code>&lt;jsp:getProperty name="s" property="name"/&gt;</code></td>
+            <td>Calls getter and prints the value (like an expression).</td>
+          </tr>
+          <tr>
+            <td><code>jsp:plugin</code></td>
+            <td><code>&lt;jsp:plugin type="applet" code="A.class"/&gt;</code></td>
+            <td>Legacy: generated HTML for Java applets / beans. Rare today.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:fallback</code></td>
+            <td>inside plugin</td>
+            <td>Markup shown if the plugin cannot start.</td>
+          </tr>
+          <tr>
+            <td><code>jsp:element / attribute / body</code></td>
+            <td>dynamic XML element construction</td>
+            <td>Builds tags when the element name itself is dynamic.</td>
+          </tr>
+        </table>
+
+        <h4>include directive vs jsp:include (must-score table)</h4>
+        <table>
+          <tr><th></th><th>&lt;%@ include %&gt;</th><th>&lt;jsp:include&gt;</th></tr>
+          <tr><td>When</td><td>Translation time (static)</td><td>Request time (dynamic)</td></tr>
+          <tr><td>Servlets generated</td><td>One combined servlet</td><td>Separate resources, dispatched</td></tr>
+          <tr><td>Can include JSP that changes often</td><td>Parent may not see changes immediately</td><td>Always latest</td></tr>
+          <tr><td>Can pass parameters</td><td>No</td><td>Yes, <code>jsp:param</code></td></tr>
+          <tr><td>Typical use</td><td>copyright, taglibs, constants</td><td>header/nav that depends on session</td></tr>
+        </table>
+
+        <pre class="syntax">&lt;jsp:include page=<span class="s">"header.jsp"</span>&gt;
+  &lt;jsp:param name=<span class="s">"title"</span> value=<span class="s">"Results"</span> /&gt;
+&lt;/jsp:include&gt;
+
+&lt;jsp:forward page=<span class="s">"dashboard.jsp"</span>&gt;
+  &lt;jsp:param name=<span class="s">"role"</span> value=<span class="s">"student"</span> /&gt;
+&lt;/jsp:forward&gt;</pre>
+
+        <h4>JavaBean rules (for useBean)</h4>
+        <ul>
+          <li>Public no-arg constructor.</li>
+          <li>Private fields + public getters/setters named <code>getX</code> / <code>setX</code>.</li>
+          <li>Implements <code>Serializable</code> if stored in session (recommended).</li>
+          <li>Class is usually placed in a package, e.g. <code>beans.Student</code>.</li>
+        </ul>
+        <pre class="syntax"><span class="k">package</span> beans;
+<span class="k">public class</span> Student <span class="k">implements</span> java.io.Serializable {
+  <span class="k">private</span> String name;
+  <span class="k">private int</span> marks;
+  <span class="k">public</span> Student() {}
+  <span class="k">public</span> String getName() { <span class="k">return</span> name; }
+  <span class="k">public void</span> setName(String name) { <span class="k">this</span>.name = name; }
+  <span class="k">public int</span> getMarks() { <span class="k">return</span> marks; }
+  <span class="k">public void</span> setMarks(<span class="k">int</span> marks) { <span class="k">this</span>.marks = marks; }
+}</pre>
+        <pre class="syntax">&lt;jsp:useBean id=<span class="s">"st"</span> class=<span class="s">"beans.Student"</span> scope=<span class="s">"session"</span> /&gt;
+&lt;jsp:setProperty name=<span class="s">"st"</span> property=<span class="s">"*"</span> /&gt;
+Name: &lt;jsp:getProperty name=<span class="s">"st"</span> property=<span class="s">"name"</span> /&gt;</pre>
+
+        <div class="example-lab" data-example="action_include">
+          <div class="lab-head">
+            <div><span class="tag">Program 6.1</span><h4>jsp:include — layout with navigation</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body"><div class="params"><label>pageTitle <input data-param="pageTitle" value="Results 2026" /></label></div></div>
+        </div>
+        <div class="example-lab" data-example="action_forward">
+          <div class="lab-head">
+            <div><span class="tag">Program 6.2</span><h4>Role-based dispatch (forward/include pattern)</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Set role to <code>student</code> or <code>admin</code> and Run.</p>
+            <div class="params"><label>role <input data-param="role" value="student" /></label></div>
+          </div>
+        </div>
+        <div class="example-lab" data-example="usebean_student">
+          <div class="lab-head">
+            <div><span class="tag gold">Program 6.3</span><h4>useBean + setProperty + getProperty</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>name <input data-param="name" value="Aditi Patil" /></label>
+              <label>marks <input data-param="marks" value="88" /></label>
+            </div>
+          </div>
+        </div>
+
+        <h3>6.2 Implicit objects — complete API notes</h3>
+        <p>
+          These nine objects are created by the container inside <code>_jspService</code>.
+          You do not declare them. They correspond 1-to-1 with servlet types.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-implicit-objects.png" alt="Nine implicit objects and four scopes" />
+          <figcaption>Figure 7 — Nine implicit objects and four scopes (page → request → session → application)</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 7 (Implicit objects &amp; scopes)</h4>
+          <ol>
+            <li><b>request</b> — Data for one HTTP request (URL parameters, form fields).</li>
+            <li><b>session</b> — Data for one user across many requests (login, cart).</li>
+            <li><b>application</b> — Data shared by all users (visitor counter, site settings).</li>
+            <li><b>pageContext</b> — Can store data in any of the four scopes.</li>
+            <li><b>out</b> — Used to write HTML to the browser.</li>
+            <li><b>Scope nesting</b> — page ⊂ request ⊂ session ⊂ application (inner scopes die sooner).</li>
+            <li><b>exception</b> — Available only on error pages (<code>isErrorPage="true"</code>).</li>
+          </ol>
+        </div>
+        <table>
+          <tr><th>Object</th><th>Type</th><th>Scope</th><th>Purpose</th></tr>
+          <tr><td><code>request</code></td><td><code>HttpServletRequest</code></td><td>request</td><td>Parameters, headers, attributes, URI, cookies, locale</td></tr>
+          <tr><td><code>response</code></td><td><code>HttpServletResponse</code></td><td>page</td><td>Status, headers, cookies, redirect, content type</td></tr>
+          <tr><td><code>out</code></td><td><code>JspWriter</code></td><td>page</td><td>Buffered writer for the body</td></tr>
+          <tr><td><code>session</code></td><td><code>HttpSession</code></td><td>session</td><td>Per-user conversation (absent if session="false")</td></tr>
+          <tr><td><code>application</code></td><td><code>ServletContext</code></td><td>application</td><td>Whole web app: paths, init params, global attributes</td></tr>
+          <tr><td><code>config</code></td><td><code>ServletConfig</code></td><td>page</td><td>Init parameters of this JSP/servlet</td></tr>
+          <tr><td><code>pageContext</code></td><td><code>PageContext</code></td><td>page</td><td>Hub: all other objects, include/forward, scoped attributes</td></tr>
+          <tr><td><code>page</code></td><td><code>Object</code> (this servlet)</td><td>page</td><td>Reference to the generated servlet instance</td></tr>
+          <tr><td><code>exception</code></td><td><code>Throwable</code></td><td>page</td><td>Only on pages with <code>isErrorPage="true"</code></td></tr>
+        </table>
+
+        <h4>request — important methods</h4>
+        <table>
+          <tr><th>Syntax</th><th>Returns</th><th>Description</th></tr>
+          <tr><td><code>String getParameter(String name)</code></td><td>String or null</td><td>One form/query field</td></tr>
+          <tr><td><code>String[] getParameterValues(String name)</code></td><td>array</td><td>Checkboxes / multi-select</td></tr>
+          <tr><td><code>Enumeration getParameterNames()</code></td><td>names</td><td>All parameter keys</td></tr>
+          <tr><td><code>void setAttribute(String, Object)</code></td><td>—</td><td>Store data for this request (controller → view)</td></tr>
+          <tr><td><code>Object getAttribute(String)</code></td><td>Object</td><td>Read request attribute</td></tr>
+          <tr><td><code>String getMethod()</code></td><td>GET/POST/…</td><td>HTTP method</td></tr>
+          <tr><td><code>String getRequestURI()</code></td><td>path</td><td>Resource path</td></tr>
+          <tr><td><code>String getHeader(String)</code></td><td>String</td><td>e.g. User-Agent, Referer</td></tr>
+          <tr><td><code>String getRemoteAddr()</code></td><td>IP</td><td>Client address</td></tr>
+          <tr><td><code>Cookie[] getCookies()</code></td><td>cookies</td><td>Browser cookies</td></tr>
+          <tr><td><code>HttpSession getSession()</code></td><td>session</td><td>Same as implicit session</td></tr>
+          <tr><td><code>RequestDispatcher getRequestDispatcher(String)</code></td><td>RD</td><td>Manual forward/include</td></tr>
+        </table>
+        <div class="example-lab" data-example="implicit_request">
+          <div class="lab-head">
+            <div><span class="tag">Program 6.4</span><h4>request implicit object</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>roll <input data-param="roll" value="21IT045" /></label>
+              <label>course <input data-param="course" value="Advanced Java" /></label>
+            </div>
+          </div>
+        </div>
+
+        <h4>response — important methods</h4>
+        <table>
+          <tr><th>Syntax</th><th>Description</th></tr>
+          <tr><td><code>void setContentType(String type)</code></td><td><code>text/html</code>, <code>application/pdf</code>, …</td></tr>
+          <tr><td><code>void setHeader(String, String)</code></td><td>Custom header (cache-control, location…)</td></tr>
+          <tr><td><code>void setStatus(int)</code></td><td>HTTP status 200, 404, 302…</td></tr>
+          <tr><td><code>void sendRedirect(String url)</code></td><td>Client-side redirect (new request, URL changes). Opposite of forward.</td></tr>
+          <tr><td><code>void addCookie(Cookie c)</code></td><td>Send a cookie</td></tr>
+          <tr><td><code>void sendError(int, String)</code></td><td>Error status + message</td></tr>
+        </table>
+        <pre class="syntax">&lt;%
+  response.setContentType(<span class="s">"text/html"</span>);
+  response.setHeader(<span class="s">"Cache-Control"</span>, <span class="s">"no-cache"</span>);
+  <span class="c">// response.sendRedirect("login.jsp");</span>
+%&gt;</pre>
+        <p><b>forward vs redirect:</b> forward is server-side (same request, URL unchanged). redirect is 302 to the browser (new request, attributes of old request are lost unless session/flash).</p>
+
+        <h4>out (JspWriter)</h4>
+        <table>
+          <tr><th>Syntax</th><th>Description</th></tr>
+          <tr><td><code>void print(type x)</code> / <code>println(x)</code></td><td>Write data (overloaded for all primitives and Object)</td></tr>
+          <tr><td><code>void write(String / char[])</code></td><td>Low-level write</td></tr>
+          <tr><td><code>void flush()</code></td><td>Push buffer to client (after this, forward may fail)</td></tr>
+          <tr><td><code>void clear()</code> / <code>clearBuffer()</code></td><td>Discard buffer; clear throws if already flushed</td></tr>
+          <tr><td><code>int getBufferSize()</code> / <code>getRemaining()</code></td><td>Buffer diagnostics</td></tr>
+          <tr><td><code>void close()</code></td><td>End writing</td></tr>
+        </table>
+        <p><code>JspWriter</code> is like <code>PrintWriter</code> but buffered according to the page <code>buffer</code> attribute.</p>
+        <div class="example-lab" data-example="implicit_out">
+          <div class="lab-head">
+            <div><span class="tag">Program 6.5</span><h4>out.print / out.println</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body"><div class="params"><label>city <input data-param="city" value="Solapur" /></label></div></div>
+        </div>
+
+        <h4>session (HttpSession)</h4>
+        <table>
+          <tr><th>Syntax</th><th>Description</th></tr>
+          <tr><td><code>void setAttribute(String, Object)</code></td><td>Bind object to this user session</td></tr>
+          <tr><td><code>Object getAttribute(String)</code></td><td>Read; null if missing</td></tr>
+          <tr><td><code>void removeAttribute(String)</code></td><td>Unbind</td></tr>
+          <tr><td><code>String getId()</code></td><td>JSESSIONID value</td></tr>
+          <tr><td><code>boolean isNew()</code></td><td>True if client does not yet know the id</td></tr>
+          <tr><td><code>void invalidate()</code></td><td>Logout — destroy session</td></tr>
+          <tr><td><code>void setMaxInactiveInterval(int seconds)</code></td><td>Timeout; 0 or negative means never (container-specific)</td></tr>
+          <tr><td><code>long getCreationTime()</code> / <code>getLastAccessedTime()</code></td><td>Epoch millis</td></tr>
+        </table>
+        <div class="example-lab" data-example="implicit_session">
+          <div class="lab-head">
+            <div><span class="tag gold">Program 6.6</span><h4>session login (admin / admin123)</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>uname <input data-param="uname" value="admin" /></label>
+              <label>pass <input data-param="pass" value="admin123" /></label>
+            </div>
+          </div>
+        </div>
+
+        <h4>application (ServletContext)</h4>
+        <table>
+          <tr><th>Syntax</th><th>Description</th></tr>
+          <tr><td><code>void setAttribute / getAttribute / removeAttribute</code></td><td>Global data (hit counters, caches)</td></tr>
+          <tr><td><code>String getInitParameter(String)</code></td><td>Context-param from web.xml</td></tr>
+          <tr><td><code>String getRealPath(String)</code></td><td>Filesystem path of a web resource</td></tr>
+          <tr><td><code>String getServerInfo()</code></td><td>Container name/version</td></tr>
+          <tr><td><code>int getMajorVersion()</code></td><td>Servlet API version</td></tr>
+        </table>
+        <div class="example-lab" data-example="implicit_application">
+          <div class="lab-head">
+            <div><span class="tag">Program 6.7</span><h4>application-scope visitor counter</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body"><p class="lab-meta">Run multiple times — count is shared across all “users” of this notes simulator.</p></div>
+        </div>
+
+        <h4>config, pageContext, page, exception</h4>
+        <table>
+          <tr><th>Object</th><th>Key methods</th><th>Notes</th></tr>
+          <tr><td><code>config</code></td><td><code>getInitParameter</code>, <code>getServletName</code>, <code>getServletContext</code></td><td>JSP init params declared in <code>web.xml</code> <code>&lt;jsp-file&gt;</code></td></tr>
+          <tr><td><code>pageContext</code></td><td><code>setAttribute(name,val,scope)</code>, <code>findAttribute</code>, <code>include</code>, <code>forward</code>, <code>getOut</code>, <code>getSession</code></td><td>Scopes: <code>PAGE_SCOPE</code>, <code>REQUEST_SCOPE</code>, <code>SESSION_SCOPE</code>, <code>APPLICATION_SCOPE</code></td></tr>
+          <tr><td><code>page</code></td><td>same as <code>this</code></td><td>Rarely used; type is Object so you cast</td></tr>
+          <tr><td><code>exception</code></td><td><code>getMessage()</code>, <code>printStackTrace()</code>, <code>getCause()</code></td><td>Only if <code>isErrorPage="true"</code></td></tr>
+        </table>
+        <pre class="syntax">&lt;%
+  pageContext.setAttribute(<span class="s">"tmp"</span>, <span class="s">"only this page"</span>, PageContext.PAGE_SCOPE);
+  pageContext.setAttribute(<span class="s">"msg"</span>, <span class="s">"next JSP can read"</span>, PageContext.REQUEST_SCOPE);
+  String x = (String) pageContext.findAttribute(<span class="s">"msg"</span>); <span class="c">// searches page→request→session→app</span>
+%&gt;</pre>
+      </section>
+
+      <!-- 7 EXCEPTION -->
+      <section class="section" id="ex">
+        <h2 class="section-title">7. Exception handling in JSP</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            When Java code in a JSP fails (bad input, divide by zero, etc.), the user should see a friendly error page — not a scary stack trace.
+            JSP offers three ways: <b>try-catch</b> in scriptlet, <b>errorPage</b> attribute, and <b>web.xml</b> error mapping.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          Exception handling in JSP means catching or forwarding errors so the web application responds gracefully.
+          <code>errorPage="error.jsp"</code> on a normal page forwards uncaught errors to an error view.
+          <code>isErrorPage="true"</code> on the error page enables the implicit <code>exception</code> object.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>try-catch</b> — Handle errors inside the same page (best for small, local problems).</li>
+            <li><b>errorPage</b> — Set on the page that may fail; names the error JSP to forward to.</li>
+            <li><b>isErrorPage="true"</b> — Set on the error JSP; gives access to <code>exception</code> object.</li>
+            <li><b>web.xml</b> — Maps HTTP 404, 500, or exception types to error pages for the whole app.</li>
+            <li>Never show raw stack traces to end users in banking, insurance, or exam portals.</li>
+          </ol>
+        </div>
+
+        <p class="lead">
+          Uncaught exceptions in <code>_jspService</code> would otherwise show a container stack trace to the user.
+          JSP gives three layered techniques: scriptlet try/catch, page-level <code>errorPage</code>, and application-level <code>web.xml</code>.
+        </p>
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-exception-handling.png" alt="Exception handling flow in JSP" />
+          <figcaption>Figure 8 — Three layers of exception handling in JSP applications</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 8 (Exception handling)</h4>
+          <ol>
+            <li><b>Layer 1 — try/catch</b> — Developer catches error in scriptlet and shows a message on the same page.</li>
+            <li><b>Layer 2 — errorPage</b> — Uncaught error on <code>pageA.jsp</code> forwards to <code>error.jsp</code> automatically.</li>
+            <li><b>Layer 3 — web.xml</b> — Maps error codes (404, 500) or exception types for the entire application.</li>
+            <li><b>exception object</b> — On the error page, use <code>&lt;%= exception.getMessage() %&gt;</code> to show details.</li>
+            <li><b>Forward vs redirect</b> — errorPage uses server-side forward (same request, URL unchanged).</li>
+          </ol>
+        </div>
+
+        <h3>7.1 try / catch / finally in a scriptlet</h3>
+        <p>Best for recoverable, local problems (parse errors, divide by zero) when the rest of the page can still render.</p>
+        <pre class="syntax">&lt;%
+  <span class="k">try</span> {
+    <span class="k">int</span> n = Integer.parseInt(request.getParameter(<span class="s">"n"</span>));
+    out.println(100 / n);
+  } <span class="k">catch</span> (NumberFormatException e) {
+    out.println(<span class="s">"Please enter digits only"</span>);
+  } <span class="k">catch</span> (ArithmeticException e) {
+    out.println(<span class="s">"n cannot be zero"</span>);
+  } <span class="k">finally</span> {
+    <span class="c">/* optional cleanup */</span>
+  }
+%&gt;</pre>
+        <div class="example-lab" data-example="exception_try">
+          <div class="lab-head">
+            <div><span class="tag">Program 7.1</span><h4>try-catch — safe division</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Keep den=0 to see the catch block. Change den to 5 for a normal result.</p>
+            <div class="params">
+              <label>num <input data-param="num" value="100" /></label>
+              <label>den <input data-param="den" value="0" /></label>
+            </div>
+          </div>
+        </div>
+
+        <h3>7.2 errorPage and isErrorPage (declarative)</h3>
+        <p>If you do not catch an exception, the container forwards to the page named in <code>errorPage</code>. That page must set <code>isErrorPage="true"</code> so that <code>exception</code> exists.</p>
+        <pre class="syntax"><span class="c">&lt;%-- risky.jsp --%&gt;</span>
+&lt;%@ page errorPage=<span class="s">"error.jsp"</span> %&gt;
+&lt;% <span class="k">int</span> age = Integer.parseInt(request.getParameter(<span class="s">"age"</span>)); %&gt;
+
+<span class="c">&lt;%-- error.jsp --%&gt;</span>
+&lt;%@ page isErrorPage=<span class="s">"true"</span> %&gt;
+&lt;h2&gt;Oops&lt;/h2&gt;
+Message: &lt;%= exception.getMessage() %&gt;
+Class: &lt;%= exception.getClass().getName() %&gt;</pre>
+        <table>
+          <tr><th>Attribute</th><th>On which page</th><th>Effect</th></tr>
+          <tr><td><code>errorPage="url"</code></td><td>Normal (risky) page</td><td>Forward target for uncaught Throwable</td></tr>
+          <tr><td><code>isErrorPage="true"</code></td><td>Error view</td><td>Creates implicit <code>exception</code></td></tr>
+        </table>
+        <div class="callout warn"><strong>Gotcha</strong> If the error page itself throws, or if output was already <code>flush</code>ed, forwarding can fail. Keep error pages tiny. Never set <code>errorPage</code> on a page that is already an error page pointing to itself.</div>
+        <div class="example-lab" data-example="exception_errorpage">
+          <div class="lab-head">
+            <div><span class="tag gold">Program 7.2</span><h4>errorPage forwarding (enter non-numeric age)</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params"><label>age <input data-param="age" value="abc" /></label></div>
+            <p class="lab-meta">Run with age=abc → NumberFormatException → error.jsp. Then try age=20.</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="error_view">
+          <div class="lab-head">
+            <div><span class="tag">Program 7.3</span><h4>Error view using exception object</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body"><p class="lab-meta">This page is the target view. Run online to see the friendly error layout.</p></div>
+        </div>
+
+        <h3>7.3 web.xml error pages (application level)</h3>
+        <p>Central mapping for HTTP status codes and exception types. Works for servlets and JSPs.</p>
+        <pre class="syntax">&lt;web-app&gt;
+  &lt;error-page&gt;
+    &lt;exception-type&gt;java.lang.Throwable&lt;/exception-type&gt;
+    &lt;location&gt;/error.jsp&lt;/location&gt;
+  &lt;/error-page&gt;
+  &lt;error-page&gt;
+    &lt;error-code&gt;404&lt;/error-code&gt;
+    &lt;location&gt;/notfound.jsp&lt;/location&gt;
+  &lt;/error-page&gt;
+  &lt;error-page&gt;
+    &lt;error-code&gt;500&lt;/error-code&gt;
+    &lt;location&gt;/error500.jsp&lt;/location&gt;
+  &lt;/error-page&gt;
+&lt;/web-app&gt;</pre>
+        <p>On those pages you can read <code>javax.servlet.error.status_code</code>, <code>javax.servlet.error.message</code>, <code>javax.servlet.error.exception</code> as request attributes (Jakarta EE uses the <code>jakarta.servlet.*</code> names).</p>
+
+        <h3>7.4 Typical exceptions in JSP labs</h3>
+        <table>
+          <tr><th>Exception</th><th>When</th><th>How to prevent</th></tr>
+          <tr><td><code>NumberFormatException</code></td><td>Empty or "abc" passed to parseInt</td><td>Validate; catch; required HTML fields</td></tr>
+          <tr><td><code>ArithmeticException</code></td><td>Divide by zero (percentage / maxMarks)</td><td>Check denominator</td></tr>
+          <tr><td><code>NullPointerException</code></td><td>getParameter null then <code>.equals</code></td><td>Use <code>"admin".equals(p)</code> constant-first</td></tr>
+          <tr><td><code>ClassNotFoundException</code></td><td>JDBC driver missing</td><td><code>Class.forName</code> + jar in <code>WEB-INF/lib</code></td></tr>
+          <tr><td><code>SQLException</code></td><td>Bad SQL / DB down</td><td>try/catch; error page; connection pool</td></tr>
+        </table>
+      </section>
+
+      <!-- 8 SCOPES -->
+      <section class="section" id="scopes">
+        <h2 class="section-title">8. Scopes, session tracking and supporting API</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            Scope decides <b>how long data lives</b> and <b>who can see it</b>.
+            Page scope dies when the page finishes. Request scope lasts for one HTTP call.
+            Session scope lasts for one logged-in user. Application scope is shared by all users of the website.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition — Scope</strong>
+          Scope is the visibility and lifetime of an object stored using <code>setAttribute</code>.
+          JSP has four scopes: page, request, session, and application — from shortest life to longest life.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>page</b> — Data visible only in the current JSP (shortest life).</li>
+            <li><b>request</b> — Data shared between servlet and JSP in one request (includes forward/include).</li>
+            <li><b>session</b> — Data for one user until logout or timeout (login, shopping cart).</li>
+            <li><b>application</b> — Data for all users until server stops (hit counter).</li>
+            <li>Session tracking uses cookies (<code>JSESSIONID</code>), URL rewriting, or hidden fields.</li>
+            <li>EL syntax <code>${sessionScope.user}</code> is the modern way to read scoped data.</li>
+          </ol>
+        </div>
+
+        <p>Four scopes decide how long an attribute lives. This is asked in almost every oral exam.</p>
+        <table>
+          <tr><th>Scope</th><th>useBean value</th><th>Visible to</th><th>Lifetime</th><th>Example</th></tr>
+          <tr><td>page</td><td><code>page</code></td><td>This JSP only</td><td>Until response finishes</td><td>Temporary loop flags</td></tr>
+          <tr><td>request</td><td><code>request</code></td><td>This JSP + forwards/includes</td><td>One HTTP request</td><td>Servlet puts Student, JSP displays it</td></tr>
+          <tr><td>session</td><td><code>session</code></td><td>All requests of one user</td><td>Until timeout / invalidate</td><td>Login, shopping cart</td></tr>
+          <tr><td>application</td><td><code>application</code></td><td>All users</td><td>Until undeploy</td><td>Hit counter, cached dropdowns</td></tr>
+        </table>
+        <pre class="syntax">session.setAttribute(<span class="s">"cart"</span>, cart);
+Student s = (Student) session.getAttribute(<span class="s">"cart"</span>);
+application.setAttribute(<span class="s">"hits"</span>, hits);
+pageContext.setAttribute(<span class="s">"x"</span>, 1, PageContext.REQUEST_SCOPE);</pre>
+        <h3>Cookie API (used with response / request)</h3>
+        <table>
+          <tr><th>Syntax</th><th>Description</th></tr>
+          <tr><td><code>Cookie c = new Cookie("theme", "dark")</code></td><td>Create a cookie (name, value)</td></tr>
+          <tr><td><code>c.setMaxAge(60 * 60 * 24)</code></td><td>Lifetime in seconds (negative = session cookie)</td></tr>
+          <tr><td><code>c.setPath("/")</code></td><td>URL prefix that will receive the cookie</td></tr>
+          <tr><td><code>c.setHttpOnly(true)</code></td><td>Block JavaScript access (XSS hardening)</td></tr>
+          <tr><td><code>response.addCookie(c)</code></td><td>Send Set-Cookie header</td></tr>
+          <tr><td><code>request.getCookies()</code></td><td>Read incoming cookies</td></tr>
+        </table>
+        <h3>JSP + JDBC (how result portals actually load marks)</h3>
+        <p>
+          ICA theory often stops at scriptlets; real apps put JDBC in a DAO class. A textbook scriptlet looks like this
+          (run it on Tomcat with MySQL Connector in <code>WEB-INF/lib</code> — not in the browser simulator):
+        </p>
+        <pre class="syntax">&lt;%@ page import=<span class="s">"java.sql.*"</span> %&gt;
+&lt;%
+  Class.forName(<span class="s">"com.mysql.cj.jdbc.Driver"</span>);
+  Connection con = DriverManager.getConnection(
+      <span class="s">"jdbc:mysql://localhost:3306/college"</span>, <span class="s">"root"</span>, <span class="s">"root"</span>);
+  PreparedStatement ps = con.prepareStatement(
+      <span class="s">"SELECT name, marks FROM student WHERE roll=?"</span>);
+  ps.setString(1, request.getParameter(<span class="s">"roll"</span>));
+  ResultSet rs = ps.executeQuery();
+  <span class="k">if</span> (rs.next()) {
+    out.println(rs.getString(<span class="s">"name"</span>) + <span class="s">" : "</span> + rs.getInt(<span class="s">"marks"</span>));
+  } <span class="k">else</span> {
+    out.println(<span class="s">"Roll not found"</span>);
+  }
+  rs.close(); ps.close(); con.close();
+%&gt;</pre>
+        <table>
+          <tr><th>JDBC method</th><th>Description</th></tr>
+          <tr><td><code>Class.forName(driver)</code></td><td>Load driver class (older JDBC; JDBC 4+ can skip)</td></tr>
+          <tr><td><code>DriverManager.getConnection(url, user, pass)</code></td><td>Open DB connection</td></tr>
+          <tr><td><code>con.prepareStatement(sql)</code></td><td>Precompiled SQL with <code>?</code> placeholders (avoids injection)</td></tr>
+          <tr><td><code>ps.setString / setInt</code></td><td>Bind parameters</td></tr>
+          <tr><td><code>executeQuery()</code></td><td>SELECT → ResultSet</td></tr>
+          <tr><td><code>executeUpdate()</code></td><td>INSERT/UPDATE/DELETE → row count</td></tr>
+          <tr><td><code>rs.next()</code></td><td>Advance cursor; false when no more rows</td></tr>
+          <tr><td><code>rs.getString / getInt</code></td><td>Read columns</td></tr>
+          <tr><td><code>close()</code></td><td>Always close ResultSet, Statement, Connection (try-with-resources in modern Java)</td></tr>
+        </table>
+        <h3>Expression Language (EL) — industry JSP</h3>
+        <pre class="syntax">&lt;p&gt;Hello ${param.name}&lt;/p&gt;
+&lt;p&gt;User ${sessionScope.user}&lt;/p&gt;
+&lt;p&gt;Marks ${st.marks}&lt;/p&gt;  <span class="c">&lt;%-- calls getMarks() --%&gt;</span></pre>
+        <table>
+          <tr><th>EL</th><th>Meaning</th></tr>
+          <tr><td><code>${param.x}</code></td><td>request.getParameter("x")</td></tr>
+          <tr><td><code>${header["User-Agent"]}</code></td><td>request header</td></tr>
+          <tr><td><code>${pageScope / requestScope / sessionScope / applicationScope}</code></td><td>Explicit scope maps</td></tr>
+          <tr><td><code>${st.name}</code></td><td>bean getter</td></tr>
+          <tr><td><code>${empty cart}</code></td><td>null or empty</td></tr>
+          <tr><td><code>${a + b}</code>, <code>${a == b}</code>, <code>${a ? b : c}</code></td><td>operators</td></tr>
+        </table>
+        <h3>Session tracking techniques (revision)</h3>
+        <ul>
+          <li><b>Cookies</b> — <code>JSESSIONID</code> is the default mechanism.</li>
+          <li><b>URL rewriting</b> — <code>response.encodeURL("a.jsp")</code> appends <code>;jsessionid=</code> if cookies are off.</li>
+          <li><b>Hidden form fields</b> — older pattern; still used for CSRF tokens.</li>
+          <li><b>HttpSession API</b> — the object you actually store data in.</li>
+        </ul>
+      </section>
+
+      <!-- 9 APPS -->
+      <section class="section" id="apps">
+        <h2 class="section-title">9. Real-life applications of JSP</h2>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            JSP is used wherever a Java web application needs to show dynamic HTML pages —
+            online shopping, bank websites, college result portals, hospital booking, and exam systems.
+            The business logic runs in servlets/beans; JSP only displays the result to the user.
+          </p>
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>E-commerce</b> — Product catalog, cart (session), checkout invoice (JSP + beans).</li>
+            <li><b>Banking</b> — Account balance view, transaction receipt, error pages for failed transfers.</li>
+            <li><b>Education ERP</b> — Student login, marks display, hall ticket, feedback forms.</li>
+            <li><b>Healthcare / booking</b> — Doctor list, appointment confirmation, search results table.</li>
+            <li>Modern apps also use Spring MVC / REST + React, but JSP is still taught and used in many Java projects.</li>
+          </ol>
+        </div>
+
+        <figure class="figure uhd">
+          <img src="assets/images/jsp-real-life.png" alt="Real life JSP applications" />
+          <figcaption>Figure 9 — Real-world domains where JSP is used as the presentation (view) layer</figcaption>
+        </figure>
+        <div class="diagram-desc">
+          <h4>Diagram explanation — Figure 9 (Real-life applications)</h4>
+          <ul>
+            <li><b>E-commerce</b> — Product pages, cart, and bill generation (like ShopMart in ICA-3).</li>
+            <li><b>Banking / ATM</b> — Transaction screens with validation and friendly errors (like ICA-4).</li>
+            <li><b>Campus ERP</b> — Login portal, marks, attendance — session stores student PRN.</li>
+            <li><b>Reservation</b> — Train/hotel search results displayed as HTML tables from database.</li>
+            <li><b>Hospital</b> — Patient registration, appointment slots, report viewing.</li>
+            <li><b>Common pattern</b> — Servlet handles logic → Bean holds data → JSP shows HTML to user.</li>
+          </ul>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h4>E-commerce (Flipkart-style catalog)</h4>
+            <p>Servlet/controller loads products from DB into beans. JSP loops (JSTL <code>c:forEach</code>) to draw cards. Cart lives in <code>session</code>. Header is <code>jsp:include</code>.</p>
+          </div>
+          <div class="card">
+            <h4>Internet banking view layer</h4>
+            <p>After authentication filter, JSP shows balances. <code>errorPage</code> hides SQL exceptions. <code>session.invalidate()</code> on logout. HTTPS + cookies HttpOnly.</p>
+          </div>
+          <div class="card">
+            <h4>University result / ERP portal</h4>
+            <p>Student logs in; PRN stored in session; result.jsp reads marks via JDBC or a REST service and formats HTML/PDF. This is exactly ICA-4.</p>
+          </div>
+          <div class="card">
+            <h4>Reservation &amp; hospital systems</h4>
+            <p>Search form → request parameters → JSP table of trains/doctors. Forward to confirm.jsp. Application scope can cache station lists.</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="real_login_portal">
+          <div class="lab-head">
+            <div><span class="tag navy">Case study</span><h4>College ERP login portal</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta">Password for demo: <code>wit@123</code>. Trace the session attribute after success.</p>
+            <div class="params">
+              <label>userid <input data-param="userid" value="21IT045" /></label>
+              <label>pwd <input data-param="pwd" value="wit@123" /></label>
+            </div>
+          </div>
+        </div>
+        <div class="callout exam">
+          <strong>How to write this in 4 marks</strong>
+          “JSP is used as the presentation layer of Java web applications such as online shopping, result portals and net-banking.
+          Dynamic data comes from JavaBeans/JDBC; JSP tags and implicit objects (session, application) maintain user state and site-wide data.
+          The container translates JSP to a servlet, so the application remains portable across Tomcat/GlassFish.”
+        </div>
+      </section>
+
+      <!-- TOMCAT 11 DEPLOY -->
+      <section class="section" id="tomcat">
+        <h2 class="section-title">10. Apache Tomcat 11.0.24 — compile &amp; execute (all programs)</h2>
+        <p class="lead">
+          Each program shows a <b>Files</b> list and a <b>Deploy</b> button below it.
+          The Source code modal includes required files, compile steps, and the browser URL.
+        </p>
+
+        <div class="callout def">
+          <strong>Important — JSP files are not compiled manually</strong>
+          On the first request, Tomcat 11 <b>Jasper</b> translates JSP → Java servlet → <code>.class</code> automatically.
+          Only <b>JavaBeans</b> (<code>Student.java</code>, <code>Cart.java</code>) must be compiled with <code>javac</code>.
+        </div>
+
+        <h3>10.1 Software required</h3>
+        <table>
+          <tr><th>Software</th><th>Version</th><th>Download / check</th></tr>
+          <tr><td>JDK</td><td>17 or 21 (Tomcat 11 requires 17+)</td><td>Run <code>java -version</code> to verify</td></tr>
+          <tr><td>Apache Tomcat</td><td><b>11.0.24</b></td><td>tomcat.apache.org → Tomcat 11</td></tr>
+          <tr><td>Browser</td><td>Chrome / Edge</td><td><code>http://localhost:8080</code></td></tr>
+          <tr><td>Editor</td><td>Notepad++ / VS Code / Eclipse</td><td>Save JSP files as UTF-8</td></tr>
+        </table>
+
+        <h3>10.2 Project folder structure</h3>
+        <pre class="syntax">C:\apache-tomcat-11.0.24\
+  webapps\
+    jsp\                             -- application name (context path /jsp)
+      hello.jsp
+      table.jsp
+      expr.jsp
+      home.jsp
+      header.jsp                    -- static include partner file
+      footer.jsp
+      nav.jsp                       -- jsp:include partner file
+      error.jsp                     -- isErrorPage="true"
+      product_pricing.jsp, sales_forecast.jsp
+      employee_register.jsp, employee_dashboard.jsp
+      shop_cart.jsp, shop_invoice.jsp
+      insurance_premium.jsp, atm_withdraw.jsp
+      ... (all other .jsp files here)
+      WEB-INF\
+        web.xml                     -- optional (Tomcat 11 default is OK)
+        classes\
+          Student.class             -- compiled with javac
+          Cart.class
+        lib\                        -- mysql-connector.jar for JDBC
+  work\                             -- Jasper generates *_jsp.java here
+  logs\catalina.*.log               -- error and debug logs
+  bin\startup.bat                   -- start Tomcat on Windows
+  bin\shutdown.bat                  -- stop Tomcat on Windows</pre>
+
+        <h3>10.3 Step-by-step — first-time setup (Windows)</h3>
+        <ol>
+          <li>Download Tomcat 11.0.24 and extract it, e.g. <code>C:\apache-tomcat-11.0.24</code></li>
+          <li>Set <code>JAVA_HOME</code> to your JDK 17+ installation folder</li>
+          <li>Create the folder <code>webapps\jsp\</code></li>
+          <li>Copy each program from <b>Source code</b> and save it with the correct filename</li>
+          <li>Copy partner files too (e.g. <code>header.jsp</code>, <code>error.jsp</code>, <code>nav.jsp</code>)</li>
+          <li>Run <code>bin\startup.bat</code> — the console should show "Server startup"</li>
+          <li>Open the browser and pass input in the URL, e.g. <code>http://localhost:8080/jsp/table.jsp?n=12</code></li>
+        </ol>
+
+        <h3>10.4 Start / Stop Tomcat 11.0.24</h3>
+        <pre class="syntax">REM --- Environment (PowerShell / CMD) ---
+set JAVA_HOME=C:\Program Files\Java\jdk-21
+set CATALINA_HOME=C:\apache-tomcat-11.0.24
+
+REM --- Start Tomcat ---
+%CATALINA_HOME%\bin\startup.bat
+
+REM --- Stop Tomcat ---
+%CATALINA_HOME%\bin\shutdown.bat
+
+REM --- If port 8080 is already in use ---
+REM Change the Connector port in server.xml (8080 to 9090)</pre>
+
+        <h3>10.5 JSP execution — how automatic compilation works</h3>
+        <table>
+          <tr><th>Step</th><th>What happens</th><th>Location</th></tr>
+          <tr><td>1</td><td>Browser sends a JSP request with query parameters</td><td><code>/jsp/table.jsp?n=12</code></td></tr>
+          <tr><td>2</td><td>Jasper translates the JSP</td><td><code>work\Catalina\localhost\jsp\org\apache\jsp\table_jsp.java</code></td></tr>
+          <tr><td>3</td><td>Auto compile produces <code>.class</code></td><td><code>work\...\hello_jsp.class</code></td></tr>
+          <tr><td>4</td><td><code>_jspService()</code> runs and returns HTML</td><td>Browser</td></tr>
+          <tr><td>5</td><td>Edit the JSP — re-translated on the next request</td><td>Automatic</td></tr>
+        </table>
+        <pre class="syntax">REM Optional: pre-compile all JSP files (production)
+cd C:\apache-tomcat-11.0.24\bin
+jspc.bat -webapp ..\webapps\jsp -compile</pre>
+
+        <div class="callout ok">
+          <strong>Run any program via URL query string</strong>
+          All programs read input using <code>request.getParameter()</code>. Change values directly in the browser address bar — no HTML form required.
+          Example: <code>http://localhost:8080/jsp/table.jsp?n=12</code>
+        </div>
+
+        <h3>10.6 JavaBean compile (Student.java / Cart.java)</h3>
+        <p>Only the JavaBean programs need a Java source file:</p>
+        <pre class="syntax">mkdir C:\apache-tomcat-11.0.24\webapps\jsp\WEB-INF\classes
+cd C:\apache-tomcat-11.0.24\webapps\jsp\WEB-INF\classes
+
+REM Paste Student.java or Cart.java here (copy from Deploy button)
+javac -encoding UTF-8 Student.java
+javac -encoding UTF-8 Cart.java
+
+REM Output: Student.class and Cart.class in this folder
+REM Restart Tomcat, then run bean.jsp or cart.jsp</pre>
+
+        <h3>10.7 All programs — required files quick table</h3>
+        <table>
+          <tr><th>Program</th><th>Required files</th><th>Manual compile?</th><th>Run URL</th></tr>
+          <tr><td>Hello JSP</td><td><code>hello.jsp</code></td><td>No</td><td>/hello.jsp?name=Sagar</td></tr>
+          <tr><td>Multiplication table</td><td><code>table.jsp</code></td><td>No</td><td>/table.jsp?n=12</td></tr>
+          <tr><td>Expressions</td><td><code>expr.jsp</code></td><td>No</td><td>/expr.jsp?a=25&b=4</td></tr>
+          <tr><td>Counter</td><td><code>counter.jsp</code></td><td>No</td><td>/counter.jsp</td></tr>
+          <tr><td>Comments</td><td><code>comments.jsp</code></td><td>No</td><td>/comments.jsp</td></tr>
+          <tr><td>page directive</td><td><code>pageDir.jsp</code></td><td>No</td><td>/pageDir.jsp</td></tr>
+          <tr><td>Static include</td><td><code>home.jsp</code>, <code>header.jsp</code>, <code>footer.jsp</code></td><td>No</td><td>/home.jsp?user=WIT</td></tr>
+          <tr><td>request object</td><td><code>req.jsp</code></td><td>No</td><td>/req.jsp?roll=21IT045</td></tr>
+          <tr><td>session login</td><td><code>login.jsp</code></td><td>No</td><td>/login.jsp?uname=admin&pass=admin123</td></tr>
+          <tr><td>application counter</td><td><code>hits.jsp</code></td><td>No</td><td>/hits.jsp</td></tr>
+          <tr><td>out object</td><td><code>out.jsp</code></td><td>No</td><td>/out.jsp?city=Solapur</td></tr>
+          <tr><td>forward/include</td><td><code>route.jsp</code>, <code>studentHome.jsp</code>, <code>adminHome.jsp</code></td><td>No</td><td>/route.jsp?role=student</td></tr>
+          <tr><td>jsp:include</td><td><code>layout.jsp</code>, <code>nav.jsp</code></td><td>No</td><td>/layout.jsp?pageTitle=Results</td></tr>
+          <tr><td>JavaBean</td><td><code>bean.jsp</code>, <code>Student.java</code></td><td><b>Yes — Student.class</b></td><td>/bean.jsp?name=Aditi&marks=88</td></tr>
+          <tr><td>try-catch</td><td><code>safeDiv.jsp</code></td><td>No</td><td>/safeDiv.jsp?num=100&den=0</td></tr>
+          <tr><td>errorPage</td><td><code>risky.jsp</code>, <code>error.jsp</code></td><td>No</td><td>/risky.jsp?age=abc</td></tr>
+          <tr><td>ICA-1 A — E-commerce pricing</td><td><code>product_pricing.jsp</code></td><td>No</td><td>/product_pricing.jsp?price=999&discount=15</td></tr>
+          <tr><td>ICA-1 B — Sales forecast</td><td><code>sales_forecast.jsp</code></td><td>No</td><td>/sales_forecast.jsp?months=6</td></tr>
+          <tr><td>ICA-2 A — HR register</td><td><code>employee_register.jsp</code></td><td>No</td><td>/employee_register.jsp?empId=E1024&name=Rahul&dept=IT</td></tr>
+          <tr><td>ICA-2 B — HR dashboard</td><td><code>employee_dashboard.jsp</code></td><td>No (register first)</td><td>/employee_dashboard.jsp</td></tr>
+          <tr><td>ICA-3 A — Shop cart</td><td><code>shop_cart.jsp</code>, <code>cart_nav.jsp</code>, <code>Cart.java</code></td><td><b>Yes — Cart.class</b></td><td>/shop_cart.jsp?sku=BOOK101&price=450&qty=2</td></tr>
+          <tr><td>ICA-3 B — GST invoice</td><td><code>shop_invoice.jsp</code>, <code>invoice_header.jsp</code></td><td>No (cart first)</td><td>/shop_invoice.jsp</td></tr>
+          <tr><td>ICA-4 A — Insurance</td><td><code>insurance_premium.jsp</code>, <code>error.jsp</code></td><td>No</td><td>/insurance_premium.jsp?age=35&sum=500000&term=20</td></tr>
+          <tr><td>ICA-4 B — ATM withdraw</td><td><code>atm_withdraw.jsp</code></td><td>No</td><td>/atm_withdraw.jsp?balance=5000&amount=2000</td></tr>
+          <tr><td>ERP portal</td><td><code>portal.jsp</code></td><td>No</td><td>/portal.jsp?userid=21IT045&pwd=wit@123</td></tr>
+        </table>
+
+        <h3>10.8 Common errors &amp; fix (Tomcat 11)</h3>
+        <table>
+          <tr><th>Error</th><th>Reason</th><th>Fix</th></tr>
+          <tr><td>404 Not Found</td><td>Wrong folder or wrong filename</td><td>Check <code>webapps\jsp\filename.jsp</code></td></tr>
+          <tr><td>500 — ClassNotFoundException: Student</td><td>JavaBean was not compiled</td><td><code>javac Student.java</code> → WEB-INF\classes</td></tr>
+          <tr><td>500 — FileNotFoundException header.jsp</td><td>Include partner file is missing</td><td>Place header.jsp in the same folder</td></tr>
+          <tr><td>Port already in use</td><td>Port 8080 is occupied</td><td>Run shutdown.bat or change the port</td></tr>
+          <tr><td>JAVA_HOME invalid</td><td>JDK path is wrong</td><td>Set JDK 17+ path and restart Tomcat</td></tr>
+          <tr><td>Garbled Unicode text</td><td>Character encoding issue</td><td>Add <code>pageEncoding="UTF-8"</code> in the JSP</td></tr>
+        </table>
+
+        <div class="callout exam">
+          <strong>Oral exam line</strong>
+          “JSP files are not compiled manually. Tomcat 11 Jasper translates them to servlets automatically.
+          Only JavaBeans used in jsp:useBean need javac. Deployment folder is webapps/context-name/.”
+        </div>
+      </section>
+
+      <!-- ICA -->
+      <section class="section" id="ica">
+        <h2 class="section-title">11. ICA practicals — industry problems &amp; solutions</h2>
+        <p class="lead">
+          Four industry-based ICA labs. Each maps a real business scenario to JSP concepts.
+          <b>Every program runs via URL</b> — pass input as query parameters, e.g.
+          <code>http://localhost:8080/jsp/table.jsp?n=12</code>
+        </p>
+        <div class="grid-4">
+          <a class="card tight" href="#ica1"><span class="tag">ICA-1</span><h4>E-commerce pricing</h4><p>RetailMart price + GST engine.</p></a>
+          <a class="card tight" href="#ica2"><span class="tag">ICA-2</span><h4>HR onboarding</h4><p>GlobalTech employee portal.</p></a>
+          <a class="card tight" href="#ica3"><span class="tag gold">ICA-3</span><h4>Shop checkout</h4><p>ShopMart cart + GST invoice.</p></a>
+          <a class="card tight" href="#ica4"><span class="tag red">ICA-4</span><h4>Insurance + ATM</h4><p>SecureLife premium + bank ATM.</p></a>
+        </div>
+        <div class="callout exam">
+          <strong>Complete problem statement + full source code</strong>
+          Scroll to the bottom of each ICA section for the <b>complete problem statement</b>, all required files, and <b>full copy-paste ready code</b> for Tomcat deployment.
+        </div>
+        <div class="card">
+          <h4>Deployment — all ICA programs (Tomcat 11.0.24)</h4>
+          <ol>
+            <li>JDK 17+ and Apache Tomcat 11.0.24</li>
+            <li>Create folder <code>webapps/jsp/</code> and copy all <code>.jsp</code> files there</li>
+            <li>Start Tomcat: <code>bin\startup.bat</code></li>
+            <li>Run in browser by passing parameters in the URL (see each program below)</li>
+            <li>For JavaBean programs: compile <code>Cart.java</code> to <code>WEB-INF/classes/</code></li>
+          </ol>
+          <pre class="syntax">Example URLs (change values in address bar):
+http://localhost:8080/jsp/table.jsp?n=12
+http://localhost:8080/jsp/product_pricing.jsp?price=999&discount=15
+http://localhost:8080/jsp/employee_register.jsp?empId=E1024&name=Rahul&dept=IT
+http://localhost:8080/jsp/shop_cart.jsp?sku=BOOK101&price=450&qty=2
+http://localhost:8080/jsp/insurance_premium.jsp?age=35&sum=500000&term=20
+http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
+        </div>
+      </section>
+
+      <section class="section" id="ica1">
+        <h2 class="section-title">ICA Practical 1 — E-commerce pricing &amp; sales analytics</h2>
+        <div id="ica1-theory"></div>
+        <div class="ica-run-block">
+          <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
+          <p class="ica-run-lead">Har program ke liye <b>Trace</b> (flow), <b>Source code</b>, <b>Deploy</b> (Tomcat steps), ya <b>Run online</b> use karo.</p>
+        </div>
+        <div class="example-lab" data-example="ica1_elements">
+          <div class="lab-head">
+            <div><span class="tag">ICA-1 A</span><h4>E-commerce product pricing engine</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>price <input data-param="price" value="999" /></label>
+              <label>discount <input data-param="discount" value="15" /></label>
+            </div>
+            <p class="lab-meta"><b>File:</b> <code>product_pricing.jsp</code> · <b>Sample:</b> MRP 999, discount 15% → net payable with GST 18%</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="ica1_datetime">
+          <div class="lab-head">
+            <div><span class="tag">ICA-1 B</span><h4>Sales growth forecast report</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params"><label>months <input data-param="months" value="6" /></label></div>
+            <p class="lab-meta"><b>File:</b> <code>sales_forecast.jsp</code> · <b>Sample:</b> months=6 → revenue table with server date</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="ica2">
+        <h2 class="section-title">ICA Practical 2 — HR employee onboarding portal</h2>
+        <div id="ica2-theory"></div>
+        <div class="ica-run-block">
+          <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
+          <p class="ica-run-lead">Pehle <b>Register</b> run karo, phir same browser mein <b>Dashboard</b> kholo.</p>
+        </div>
+        <div class="example-lab" data-example="ica2_register">
+          <div class="lab-head">
+            <div><span class="tag">ICA-2 A</span><h4>HR employee registration</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>empId <input data-param="empId" value="E1024" /></label>
+              <label>name <input data-param="name" value="Rahul Deshmukh" /></label>
+              <label>dept <input data-param="dept" value="IT" /></label>
+            </div>
+            <p class="lab-meta"><b>File:</b> <code>employee_register.jsp</code> · Session + application scope set hota hai</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="ica2_profile">
+          <div class="lab-head">
+            <div><span class="tag">ICA-2 B</span><h4>Employee self-service dashboard</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta"><b>File:</b> <code>employee_dashboard.jsp</code> · URL params nahi — session se profile read</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="ica3">
+        <h2 class="section-title">ICA Practical 3 — E-commerce cart &amp; GST invoice</h2>
+        <div id="ica3-theory"></div>
+        <div class="ica-run-block">
+          <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
+          <p class="ica-run-lead"><code>Cart.java</code> compile karo, phir cart run karo, uske baad invoice.</p>
+        </div>
+        <div class="example-lab" data-example="ica3_cart">
+          <div class="lab-head">
+            <div><span class="tag gold">ICA-3 A</span><h4>Shopping cart checkout</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>sku <input data-param="sku" value="BOOK101" /></label>
+              <label>price <input data-param="price" value="450" /></label>
+              <label>qty <input data-param="qty" value="2" /></label>
+            </div>
+            <p class="lab-meta"><b>Files:</b> <code>shop_cart.jsp</code>, <code>Cart.java</code>, <code>cart_nav.jsp</code> · Line total Rs. 900</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="ica3_bill">
+          <div class="lab-head">
+            <div><span class="tag">ICA-3 B</span><h4>GST tax invoice</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <p class="lab-meta"><b>Files:</b> <code>shop_invoice.jsp</code>, <code>invoice_header.jsp</code> · Session bill se GST invoice</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="ica4">
+        <h2 class="section-title">ICA Practical 4 — Insurance premium &amp; ATM banking</h2>
+        <div id="ica4-theory"></div>
+        <div class="ica-run-block">
+          <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
+          <p class="ica-run-lead">Insurance mein invalid input pe <code>error.jsp</code> forward hota hai. ATM mein try-catch se friendly message.</p>
+        </div>
+        <div class="example-lab" data-example="ica4_result">
+          <div class="lab-head">
+            <div><span class="tag red">ICA-4 A</span><h4>Insurance premium calculator</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>age <input data-param="age" value="35" /></label>
+              <label>sum <input data-param="sum" value="500000" /></label>
+              <label>term <input data-param="term" value="20" /></label>
+            </div>
+            <p class="lab-meta"><b>Files:</b> <code>insurance_premium.jsp</code>, <code>error.jsp</code> · Try <code>age=abc</code> for error page</p>
+          </div>
+        </div>
+        <div class="example-lab" data-example="ica4_bank">
+          <div class="lab-head">
+            <div><span class="tag red">ICA-4 B</span><h4>ATM cash withdrawal</h4></div>
+            <div class="lab-actions"></div>
+          </div>
+          <div class="lab-body">
+            <div class="params">
+              <label>balance <input data-param="balance" value="5000" /></label>
+              <label>amount <input data-param="amount" value="12000" /></label>
+            </div>
+            <p class="lab-meta"><b>File:</b> <code>atm_withdraw.jsp</code> · Fail: amount=12000 · Success: amount=2000</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXAM -->
+      <section class="section" id="exam">
+        <h2 class="section-title">12. Quick reference, 2-mark bytes &amp; viva bank</h2>
+
+        <div class="theory-summary">
+          <h4>Revision tip</h4>
+          <p>
+            For exam and viva, learn definitions first, then key differences (JSP vs Servlet, include vs jsp:include, forward vs redirect),
+            then life cycle order, then implicit objects and scopes. Use the programs to practice Trace and Source code.
+          </p>
+        </div>
+
+        <div class="key-points">
+          <h4>Must-know definitions (2 marks each)</h4>
+          <ol>
+            <li><b>JSP</b> — Server-side technology to create dynamic web pages; translated to servlet by container.</li>
+            <li><b>Scriptlet</b> — &lt;% %&gt; Java code inside _jspService().</li>
+            <li><b>Expression</b> — &lt;%= %&gt; prints a value; becomes out.print().</li>
+            <li><b>Declaration</b> — &lt;%! %&gt; class-level field or method.</li>
+            <li><b>Directive</b> — &lt;%@ %&gt; translation-time instruction (page, include, taglib).</li>
+            <li><b>Implicit object</b> — Pre-created object (request, session, out, etc.) in every JSP.</li>
+            <li><b>JavaBean</b> — Reusable Java class with no-arg constructor and get/set methods.</li>
+            <li><b>Scope</b> — Lifetime of data: page, request, session, application.</li>
+          </ol>
+        </div>
+
+        <h3>Translation cheat-sheet</h3>
+        <table>
+          <tr><th>You write</th><th>Servlet receives</th></tr>
+          <tr><td>HTML text</td><td><code>out.write("...")</code></td></tr>
+          <tr><td><code>&lt;% code %&gt;</code></td><td>code inside <code>_jspService</code></td></tr>
+          <tr><td><code>&lt;%= expr %&gt;</code></td><td><code>out.print(expr);</code></td></tr>
+          <tr><td><code>&lt;%! member %&gt;</code></td><td>class member</td></tr>
+          <tr><td><code>&lt;%@ page import="x" %&gt;</code></td><td><code>import x;</code></td></tr>
+          <tr><td><code>&lt;%@ include file="h.jsp" %&gt;</code></td><td>contents of h.jsp pasted</td></tr>
+          <tr><td><code>&lt;jsp:include page="h.jsp"/&gt;</code></td><td>runtime <code>RequestDispatcher.include</code></td></tr>
+        </table>
+        <h3>Likely theory questions</h3>
+        <ul>
+          <li>Explain JSP architecture with a neat diagram.</li>
+          <li>Differentiate JSP and servlet (min 8 points).</li>
+          <li>Explain JSP life cycle. List methods and servlet equivalents.</li>
+          <li>What are JSP elements? Explain with syntax and example.</li>
+          <li>Explain page directive attributes.</li>
+          <li>Static vs dynamic include.</li>
+          <li>List implicit objects with types.</li>
+          <li>Explain <code>jsp:useBean</code> with a program.</li>
+          <li>Exception handling mechanisms in JSP.</li>
+        </ul>
+        <h3>2-mark rapid fire</h3>
+        <div class="grid-2">
+          <div class="card tight"><b>JSP?</b> Server-side view tech that translates to a servlet.</div>
+          <div class="card tight"><b>Default session?</b> true — HttpSession is created.</div>
+          <div class="card tight"><b>out type?</b> javax.servlet.jsp.JspWriter</div>
+          <div class="card tight"><b>exception available?</b> Only isErrorPage="true".</div>
+          <div class="card tight"><b>Who translates?</b> JSP container / Jasper.</div>
+          <div class="card tight"><b>MVC view?</b> JSP. Controller? Servlet.</div>
+        </div>
+        <div class="callout exam">
+          <strong>How to use this file in lab oral</strong>
+          Har ICA section mein pehle <b>Complete problem statement</b>, phir <b>Important details</b> (Given, Requirements, Algorithm, Viva), phir <b>Programs</b> — Trace / Source code / Deploy / Run online.
+        </div>
+      </section>
+
+      <p class="footer-note">
+        Educational JSP simulator (this page) supports scriptlets, expressions, declarations, page/include directives,
+        implicit objects, jsp:include / useBean / setProperty / getProperty, and errorPage forwarding for the programs above.
+        Full Tomcat + JDBC is still required for production deployments. Diagrams are study figures; always write method signatures from the tables in the exam.
+      </p>
+    </main>
+  </div>
+
+  <div class="modal-back" id="modalBack">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-h">
+        <h3 id="modalTitle">Lab</h3>
+        <button class="close-x" title="Close">×</button>
+      </div>
+      <div class="modal-c" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/jsp-runtime.js"></script>
+  <script src="assets/js/examples.js"></script>
+  <script src="assets/js/deploy.js"></script>
+  <script src="assets/js/ica-practicals.js"></script>
+  <script src="assets/js/ica-render.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
