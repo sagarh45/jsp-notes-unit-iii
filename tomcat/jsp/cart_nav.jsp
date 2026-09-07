@@ -1,0 +1,1 @@
+<div style='margin-top:12px;padding:8px;background:#0f2744;color:#fff;border-radius:8px;'>Home | Cart | Checkout | Support</div>

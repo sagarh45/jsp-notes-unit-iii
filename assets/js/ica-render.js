@@ -29,14 +29,17 @@
     html += "</ol>";
 
     html += "<h4>Programs overview</h4>";
-    html += "<table class='ica-programs-table'><tr><th>Program</th><th>File</th><th>Sample input (URL)</th><th>Expected output</th><th>Tomcat run URL</th></tr>";
+    html += "<table class='ica-programs-table'><tr><th>Program</th><th>HTML form</th><th>JSP file</th><th>Sample input</th><th>Expected output</th></tr>";
     practical.programs.forEach(function (prog) {
+      const formName = window.JSP_HTML_FORMS
+        ? JSP_HTML_FORMS.formFileName(prog.file)
+        : prog.file.replace(/\.jsp$/i, "_form.html");
       html += "<tr>";
       html += "<td>" + esc(prog.name) + "</td>";
+      html += "<td><code>forms/" + esc(formName) + "</code></td>";
       html += "<td><code>" + esc(prog.file) + "</code></td>";
       html += "<td>" + esc(prog.sampleInput) + "</td>";
       html += "<td>" + esc(prog.sampleOutput) + "</td>";
-      html += "<td><code class='run-url-sm'>" + esc(prog.runUrl) + "</code></td>";
       html += "</tr>";
     });
     html += "</table>";

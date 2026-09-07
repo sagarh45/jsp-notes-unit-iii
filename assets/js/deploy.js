@@ -233,6 +233,10 @@ window.JSP_DEPLOY = {
       "apache-tomcat-11.0.24/",
       "  webapps/",
       "    jsp/                         -- application folder (context path /jsp)",
+      "      forms/                     -- HTML input pages (one per program)",
+      "        hello_form.html          -- user types → Submit → hello.jsp",
+      "        table_form.html",
+      "        ... (all *_form.html)",
       "      hello.jsp",
       "      table.jsp",
       "      ... (all .jsp files)",
@@ -300,9 +304,12 @@ window.JSP_DEPLOY = {
       "  2) Compiles hello_jsp.java → hello_jsp.class",
       "  3) Executes _jspService() and sends HTML",
       "",
-      "Pass input in the browser URL (query string):",
+      "Pass input using HTML form (recommended) or URL query string:",
+      "  Step 1: http://localhost:8080/jsp/forms/hello_form.html",
+      "  Step 2: Type name → Submit → Tomcat runs hello.jsp",
+      "",
+      "Or direct URL (also works):",
       "  http://localhost:8080/jsp/table.jsp?n=12",
-      "  http://localhost:8080/jsp/hello.jsp?name=Sagar",
       "",
       "Optional precompile (production):",
       "  %CATALINA_HOME%\\bin\\jspc.bat -webapp webapps\\jsp -compile"
@@ -313,7 +320,15 @@ window.JSP_DEPLOY = {
     const m = this.meta[exId] || {};
     const list = [];
     const main = ex.file || m.files && m.files[0];
-    if (main) list.push({ name: main, type: "JSP", required: true, role: "Main page — run this URL" });
+    if (main && window.JSP_HTML_FORMS) {
+      list.push({
+        name: "forms/" + JSP_HTML_FORMS.formFileName(main),
+        type: "HTML",
+        required: true,
+        role: "Step 1 — user types input here, then Submit"
+      });
+    }
+    if (main) list.push({ name: main, type: "JSP", required: true, role: "Step 2 — JSP reads request.getParameter()" });
     if (ex.files) {
       Object.keys(ex.files).forEach(function (f) {
         if (f !== main) list.push({ name: f, type: "JSP", required: true, role: "Partner / include / error page" });
@@ -333,8 +348,27 @@ window.JSP_DEPLOY = {
   buildPanel: function (exId, ex) {
     const m = this.meta[exId] || {};
     const files = this.getRequiredFiles(exId, ex);
-    const base = this.baseUrl;
+    const main = ex.file || (m.files && m.files[0]);
     let html = "<div class='deploy-panel'>";
+
+    html += "<h4>Run process — HTML form pehle, phir JSP</h4>";
+    html += "<div class='flow-strip deploy-flow'>";
+    html += "<span>① HTML form</span><i></i><span>② User types</span><i></i><span>③ Submit POST</span><i></i><span>④ JSP runs</span><i></i><span>⑤ Output</span>";
+    html += "</div>";
+
+    if (main && window.JSP_HTML_FORMS) {
+      const formPath = "forms/" + JSP_HTML_FORMS.formFileName(main);
+      html += "<ol class='deploy-steps deploy-process'>";
+      html += "<li><b>Deploy files</b> — copy <code>" + formPath + "</code> + <code>" + main + "</code> (+ partner JSP/Java if any) to <code>webapps/jsp/</code></li>";
+      html += "<li><b>Start Tomcat</b> — <code>bin\\startup.bat</code></li>";
+      html += "<li><b>Open HTML form</b> — browser mein <code>" + this.baseUrl + "/" + formPath + "</code></li>";
+      html += "<li><b>User input</b> — text fields mein values type karo (name, price, etc.)</li>";
+      html += "<li><b>Submit</b> — form <code>action=\"/jsp/" + main + "\" method=\"post\"</code> se JSP ko data bhejta hai</li>";
+      html += "<li><b>JSP execute</b> — Tomcat <code>" + main + "</code> chalata hai, <code>request.getParameter()</code> se data read hota hai</li>";
+      html += "<li><b>Response</b> — browser mein JSP ka HTML output dikhta hai</li>";
+      html += "</ol>";
+    }
+
     html += "<h4>Required source files (Tomcat " + this.tomcat + ")</h4>";
     html += "<table class='deploy-table'><tr><th>#</th><th>File</th><th>Type</th><th>Role</th></tr>";
     files.forEach(function (f, i) {
@@ -357,9 +391,17 @@ window.JSP_DEPLOY = {
       });
     }
 
-    html += "<h4>Execute in browser (pass input in URL)</h4>";
-    html += "<pre class='syntax'>" + this.escape(this.buildUrl(exId, ex, null)) + "</pre>";
-    if (m.altRun) html += "<p class='lab-meta'>Alternate URL: <code>" + this.baseUrl + m.altRun + "</code></p>";
+    html += "<h4>Tomcat URLs</h4>";
+    if (main && window.JSP_HTML_FORMS) {
+      const formPath = "forms/" + JSP_HTML_FORMS.formFileName(main);
+      html += "<p class='lab-meta'><b>Step 1 — HTML form URL:</b></p>";
+      html += "<pre class='syntax'>" + this.escape(this.baseUrl + "/" + formPath) + "</pre>";
+      html += "<p class='lab-meta'><b>Step 2 — JSP (form submit ke baad):</b></p>";
+      html += "<pre class='syntax'>" + this.escape(this.baseUrl + "/" + main) + "  ← POST with form data</pre>";
+    } else {
+      html += "<pre class='syntax'>" + this.escape(this.buildUrl(exId, ex, null)) + "</pre>";
+    }
+    if (m.altRun) html += "<p class='lab-meta'>Alternate test URL: <code>" + this.baseUrl + m.altRun + "</code></p>";
     if (m.note) html += "<p class='lab-meta'><b>Note:</b> " + m.note + "</p>";
 
     html += "<h4>Start Tomcat 11.0.24</h4>";

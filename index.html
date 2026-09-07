@@ -52,8 +52,9 @@
         <p>
           Theory, syntax of every important API, translation-to-servlet view, diagrams, real applications,
           and runnable programs. Every lab has separate buttons:
-          <b>Trace</b> (flow only), <b>Source code</b> (files only), <b>Deploy</b> (Tomcat steps only),
-          and <b>Run online</b>.
+          <b>Trace</b> (flow only), <b>HTML form</b> (type input), <b>Source code</b> (HTML form + JSP — dono files),
+          <b>Deploy</b> (HTML → JSP process + Tomcat steps),
+          and <b>Run online</b> (pehle HTML form, Submit ke baad JSP execute).
         </p>
         <div class="chip-row">
           <span class="chip">Introduction</span>
@@ -1436,7 +1437,7 @@ pageContext.setAttribute(<span class="s">"x"</span>, 1, PageContext.REQUEST_SCOP
         <h2 class="section-title">10. Apache Tomcat 11.0.24 — compile &amp; execute (all programs)</h2>
         <p class="lead">
           Each program shows a <b>Files</b> list and a <b>Deploy</b> button below it.
-          The Source code modal includes required files, compile steps, and the browser URL.
+          The <b>Source code</b> modal shows both files — HTML form + JSP. <b>Deploy</b> shows step-by-step process. <b>Run online</b> opens HTML form first, then JSP after Submit.
         </p>
 
         <div class="callout def">
@@ -1458,6 +1459,10 @@ pageContext.setAttribute(<span class="s">"x"</span>, 1, PageContext.REQUEST_SCOP
         <pre class="syntax">C:\apache-tomcat-11.0.24\
   webapps\
     jsp\                             -- application name (context path /jsp)
+      forms\                         -- HTML input pages (user types here)
+        hello_form.html              -- Submit → hello.jsp
+        table_form.html
+        ... (all *_form.html files)
       hello.jsp
       table.jsp
       expr.jsp
@@ -1510,8 +1515,8 @@ REM Change the Connector port in server.xml (8080 to 9090)</pre>
         <h3>10.5 JSP execution — how automatic compilation works</h3>
         <table>
           <tr><th>Step</th><th>What happens</th><th>Location</th></tr>
-          <tr><td>1</td><td>Browser sends a JSP request with query parameters</td><td><code>/jsp/table.jsp?n=12</code></td></tr>
-          <tr><td>2</td><td>Jasper translates the JSP</td><td><code>work\Catalina\localhost\jsp\org\apache\jsp\table_jsp.java</code></td></tr>
+          <tr><td>1</td><td>User opens HTML form, types values, clicks Submit</td><td><code>/jsp/forms/hello_form.html</code></td></tr>
+          <tr><td>2</td><td>Form POSTs to JSP; Jasper translates the JSP</td><td><code>work\Catalina\localhost\jsp\org\apache\jsp\hello_jsp.java</code></td></tr>
           <tr><td>3</td><td>Auto compile produces <code>.class</code></td><td><code>work\...\hello_jsp.class</code></td></tr>
           <tr><td>4</td><td><code>_jspService()</code> runs and returns HTML</td><td>Browser</td></tr>
           <tr><td>5</td><td>Edit the JSP — re-translated on the next request</td><td>Automatic</td></tr>
@@ -1521,9 +1526,10 @@ cd C:\apache-tomcat-11.0.24\bin
 jspc.bat -webapp ..\webapps\jsp -compile</pre>
 
         <div class="callout ok">
-          <strong>Run any program via URL query string</strong>
-          All programs read input using <code>request.getParameter()</code>. Change values directly in the browser address bar — no HTML form required.
-          Example: <code>http://localhost:8080/jsp/table.jsp?n=12</code>
+          <strong>Run any program — HTML form first, then JSP</strong>
+          Har program ke liye alag <b>HTML form</b> hai (<code>forms/hello_form.html</code> etc.). User wahan type karta hai → Submit → JSP chalti hai.
+          JSP input <code>request.getParameter()</code> se leti hai — chahe form se aaye ya URL se.
+          Example: open <code>http://localhost:8080/jsp/forms/table_form.html</code> → type n=12 → Submit → <code>table.jsp</code> runs.
         </div>
 
         <h3>10.6 JavaBean compile (Student.java / Cart.java)</h3>
@@ -1540,32 +1546,32 @@ REM Restart Tomcat, then run bean.jsp or cart.jsp</pre>
 
         <h3>10.7 All programs — required files quick table</h3>
         <table>
-          <tr><th>Program</th><th>Required files</th><th>Manual compile?</th><th>Run URL</th></tr>
-          <tr><td>Hello JSP</td><td><code>hello.jsp</code></td><td>No</td><td>/hello.jsp?name=Sagar</td></tr>
-          <tr><td>Multiplication table</td><td><code>table.jsp</code></td><td>No</td><td>/table.jsp?n=12</td></tr>
-          <tr><td>Expressions</td><td><code>expr.jsp</code></td><td>No</td><td>/expr.jsp?a=25&b=4</td></tr>
-          <tr><td>Counter</td><td><code>counter.jsp</code></td><td>No</td><td>/counter.jsp</td></tr>
-          <tr><td>Comments</td><td><code>comments.jsp</code></td><td>No</td><td>/comments.jsp</td></tr>
-          <tr><td>page directive</td><td><code>pageDir.jsp</code></td><td>No</td><td>/pageDir.jsp</td></tr>
-          <tr><td>Static include</td><td><code>home.jsp</code>, <code>header.jsp</code>, <code>footer.jsp</code></td><td>No</td><td>/home.jsp?user=WIT</td></tr>
-          <tr><td>request object</td><td><code>req.jsp</code></td><td>No</td><td>/req.jsp?roll=21IT045</td></tr>
-          <tr><td>session login</td><td><code>login.jsp</code></td><td>No</td><td>/login.jsp?uname=admin&pass=admin123</td></tr>
-          <tr><td>application counter</td><td><code>hits.jsp</code></td><td>No</td><td>/hits.jsp</td></tr>
-          <tr><td>out object</td><td><code>out.jsp</code></td><td>No</td><td>/out.jsp?city=Solapur</td></tr>
-          <tr><td>forward/include</td><td><code>route.jsp</code>, <code>studentHome.jsp</code>, <code>adminHome.jsp</code></td><td>No</td><td>/route.jsp?role=student</td></tr>
-          <tr><td>jsp:include</td><td><code>layout.jsp</code>, <code>nav.jsp</code></td><td>No</td><td>/layout.jsp?pageTitle=Results</td></tr>
-          <tr><td>JavaBean</td><td><code>bean.jsp</code>, <code>Student.java</code></td><td><b>Yes — Student.class</b></td><td>/bean.jsp?name=Aditi&marks=88</td></tr>
-          <tr><td>try-catch</td><td><code>safeDiv.jsp</code></td><td>No</td><td>/safeDiv.jsp?num=100&den=0</td></tr>
-          <tr><td>errorPage</td><td><code>risky.jsp</code>, <code>error.jsp</code></td><td>No</td><td>/risky.jsp?age=abc</td></tr>
-          <tr><td>ICA-1 A — E-commerce pricing</td><td><code>product_pricing.jsp</code></td><td>No</td><td>/product_pricing.jsp?price=999&discount=15</td></tr>
-          <tr><td>ICA-1 B — Sales forecast</td><td><code>sales_forecast.jsp</code></td><td>No</td><td>/sales_forecast.jsp?months=6</td></tr>
-          <tr><td>ICA-2 A — HR register</td><td><code>employee_register.jsp</code></td><td>No</td><td>/employee_register.jsp?empId=E1024&name=Rahul&dept=IT</td></tr>
-          <tr><td>ICA-2 B — HR dashboard</td><td><code>employee_dashboard.jsp</code></td><td>No (register first)</td><td>/employee_dashboard.jsp</td></tr>
-          <tr><td>ICA-3 A — Shop cart</td><td><code>shop_cart.jsp</code>, <code>cart_nav.jsp</code>, <code>Cart.java</code></td><td><b>Yes — Cart.class</b></td><td>/shop_cart.jsp?sku=BOOK101&price=450&qty=2</td></tr>
-          <tr><td>ICA-3 B — GST invoice</td><td><code>shop_invoice.jsp</code>, <code>invoice_header.jsp</code></td><td>No (cart first)</td><td>/shop_invoice.jsp</td></tr>
-          <tr><td>ICA-4 A — Insurance</td><td><code>insurance_premium.jsp</code>, <code>error.jsp</code></td><td>No</td><td>/insurance_premium.jsp?age=35&sum=500000&term=20</td></tr>
-          <tr><td>ICA-4 B — ATM withdraw</td><td><code>atm_withdraw.jsp</code></td><td>No</td><td>/atm_withdraw.jsp?balance=5000&amount=2000</td></tr>
-          <tr><td>ERP portal</td><td><code>portal.jsp</code></td><td>No</td><td>/portal.jsp?userid=21IT045&pwd=wit@123</td></tr>
+          <tr><th>Program</th><th>Required files</th><th>Manual compile?</th><th>HTML form → JSP</th></tr>
+          <tr><td>Hello JSP</td><td><code>forms/hello_form.html</code>, <code>hello.jsp</code></td><td>No</td><td>hello_form.html → hello.jsp</td></tr>
+          <tr><td>Multiplication table</td><td><code>forms/table_form.html</code>, <code>table.jsp</code></td><td>No</td><td>table_form.html → table.jsp</td></tr>
+          <tr><td>Expressions</td><td><code>forms/expr_form.html</code>, <code>expr.jsp</code></td><td>No</td><td>expr_form.html → expr.jsp</td></tr>
+          <tr><td>Counter</td><td><code>forms/counter_form.html</code>, <code>counter.jsp</code></td><td>No</td><td>counter_form.html → counter.jsp</td></tr>
+          <tr><td>Comments</td><td><code>forms/comments_form.html</code>, <code>comments.jsp</code></td><td>No</td><td>comments_form.html → comments.jsp</td></tr>
+          <tr><td>page directive</td><td><code>forms/pageDir_form.html</code>, <code>pageDir.jsp</code></td><td>No</td><td>pageDir_form.html → pageDir.jsp</td></tr>
+          <tr><td>Static include</td><td><code>forms/home_form.html</code>, <code>home.jsp</code>, <code>header.jsp</code>, <code>footer.jsp</code></td><td>No</td><td>home_form.html → home.jsp</td></tr>
+          <tr><td>request object</td><td><code>forms/req_form.html</code>, <code>req.jsp</code></td><td>No</td><td>req_form.html → req.jsp</td></tr>
+          <tr><td>session login</td><td><code>forms/login_form.html</code>, <code>login.jsp</code></td><td>No</td><td>login_form.html → login.jsp</td></tr>
+          <tr><td>application counter</td><td><code>forms/hits_form.html</code>, <code>hits.jsp</code></td><td>No</td><td>hits_form.html → hits.jsp</td></tr>
+          <tr><td>out object</td><td><code>forms/out_form.html</code>, <code>out.jsp</code></td><td>No</td><td>out_form.html → out.jsp</td></tr>
+          <tr><td>forward/include</td><td><code>forms/route_form.html</code>, <code>route.jsp</code>, <code>studentHome.jsp</code>, <code>adminHome.jsp</code></td><td>No</td><td>route_form.html → route.jsp</td></tr>
+          <tr><td>jsp:include</td><td><code>forms/layout_form.html</code>, <code>layout.jsp</code>, <code>nav.jsp</code></td><td>No</td><td>layout_form.html → layout.jsp</td></tr>
+          <tr><td>JavaBean</td><td><code>forms/bean_form.html</code>, <code>bean.jsp</code>, <code>Student.java</code></td><td><b>Yes — Student.class</b></td><td>bean_form.html → bean.jsp</td></tr>
+          <tr><td>try-catch</td><td><code>forms/safeDiv_form.html</code>, <code>safeDiv.jsp</code></td><td>No</td><td>safeDiv_form.html → safeDiv.jsp</td></tr>
+          <tr><td>errorPage</td><td><code>forms/risky_form.html</code>, <code>risky.jsp</code>, <code>error.jsp</code></td><td>No</td><td>risky_form.html → risky.jsp</td></tr>
+          <tr><td>ICA-1 A — E-commerce pricing</td><td><code>forms/product_pricing_form.html</code>, <code>product_pricing.jsp</code></td><td>No</td><td>product_pricing_form.html → product_pricing.jsp</td></tr>
+          <tr><td>ICA-1 B — Sales forecast</td><td><code>forms/sales_forecast_form.html</code>, <code>sales_forecast.jsp</code></td><td>No</td><td>sales_forecast_form.html → sales_forecast.jsp</td></tr>
+          <tr><td>ICA-2 A — HR register</td><td><code>forms/employee_register_form.html</code>, <code>employee_register.jsp</code></td><td>No</td><td>employee_register_form.html → employee_register.jsp</td></tr>
+          <tr><td>ICA-2 B — HR dashboard</td><td><code>forms/employee_dashboard_form.html</code>, <code>employee_dashboard.jsp</code></td><td>No (register first)</td><td>employee_dashboard_form.html → employee_dashboard.jsp</td></tr>
+          <tr><td>ICA-3 A — Shop cart</td><td><code>forms/shop_cart_form.html</code>, <code>shop_cart.jsp</code>, <code>cart_nav.jsp</code>, <code>Cart.java</code></td><td><b>Yes — Cart.class</b></td><td>shop_cart_form.html → shop_cart.jsp</td></tr>
+          <tr><td>ICA-3 B — GST invoice</td><td><code>forms/shop_invoice_form.html</code>, <code>shop_invoice.jsp</code>, <code>invoice_header.jsp</code></td><td>No (cart first)</td><td>shop_invoice_form.html → shop_invoice.jsp</td></tr>
+          <tr><td>ICA-4 A — Insurance</td><td><code>forms/insurance_premium_form.html</code>, <code>insurance_premium.jsp</code>, <code>error.jsp</code></td><td>No</td><td>insurance_premium_form.html → insurance_premium.jsp</td></tr>
+          <tr><td>ICA-4 B — ATM withdraw</td><td><code>forms/atm_withdraw_form.html</code>, <code>atm_withdraw.jsp</code></td><td>No</td><td>atm_withdraw_form.html → atm_withdraw.jsp</td></tr>
+          <tr><td>ERP portal</td><td><code>forms/portal_form.html</code>, <code>portal.jsp</code></td><td>No</td><td>portal_form.html → portal.jsp</td></tr>
         </table>
 
         <h3>10.8 Common errors &amp; fix (Tomcat 11)</h3>
@@ -1628,7 +1634,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica1-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead">Har program ke liye <b>Trace</b> (flow), <b>Source code</b>, <b>Deploy</b> (Tomcat steps), ya <b>Run online</b> use karo.</p>
+          <p class="ica-run-lead">Har program: <b>Source</b> (HTML + JSP dono), <b>Deploy</b> (process), <b>Run online</b> (pehle form → phir JSP), ya <b>Trace</b>.</p>
         </div>
         <div class="example-lab" data-example="ica1_elements">
           <div class="lab-head">
@@ -1660,7 +1666,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica2-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead">Pehle <b>Register</b> run karo, phir same browser mein <b>Dashboard</b> kholo.</p>
+          <p class="ica-run-lead">Pehle <b>employee_register_form.html</b> submit karo, phir same browser mein <b>employee_dashboard_form.html</b> kholo.</p>
         </div>
         <div class="example-lab" data-example="ica2_register">
           <div class="lab-head">
@@ -1692,7 +1698,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica3-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead"><code>Cart.java</code> compile karo, phir cart run karo, uske baad invoice.</p>
+          <p class="ica-run-lead"><code>Cart.java</code> compile karo, phir <b>shop_cart_form.html</b> submit karo, uske baad <b>shop_invoice_form.html</b>.</p>
         </div>
         <div class="example-lab" data-example="ica3_cart">
           <div class="lab-head">
@@ -1840,6 +1846,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
   <script src="assets/js/jsp-runtime.js"></script>
   <script src="assets/js/examples.js"></script>
   <script src="assets/js/deploy.js"></script>
+  <script src="assets/js/html-forms.js"></script>
   <script src="assets/js/ica-practicals.js"></script>
   <script src="assets/js/ica-render.js"></script>
   <script src="assets/js/app.js"></script>

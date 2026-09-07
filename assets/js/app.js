@@ -71,20 +71,65 @@
     document.body.classList.remove("modal-open");
   }
 
-  /* SOURCE — code only */
-  function sourceView(ex) {
+  /* SOURCE — HTML form + JSP (both files) */
+  function sourceView(exId, ex) {
+    const formFile = window.JSP_HTML_FORMS ? JSP_HTML_FORMS.formFileName(ex.file) : "";
     let html = "<div class='modal-section modal-section-source'>";
-    html += "<p class='lab-meta'>Copy these files into <code>webapps/jsp/</code>. Source code only — no deploy steps here.</p>";
-    html += "<h4 class='file-heading'>Main file — <code>" + ex.file + "</code></h4>";
+    html += "<div class='run-steps run-steps-static'><span class='done'>1. HTML form</span><i></i><span class='done'>2. JSP page</span></div>";
+    html += "<p class='lab-meta'>Dono alag files — user <b>HTML form</b> mein type karta hai → Submit → <b>JSP</b> <code>request.getParameter()</code> se data leti hai.</p>";
+    if (window.JSP_HTML_FORMS) {
+      html += "<h4 class='file-heading'>File 1 — HTML form — <code>forms/" + formFile + "</code></h4>";
+      html += "<pre class='syntax syntax-html'>" + JspRuntime.escapeHtml(JSP_HTML_FORMS.buildFormHtml(exId, ex)) + "</pre>";
+    }
+    html += "<h4 class='file-heading'>File 2 — JSP page — <code>" + ex.file + "</code></h4>";
     html += "<pre class='syntax'>" + JspRuntime.highlightJsp(ex.jsp) + "</pre>";
     if (ex.files) {
       Object.keys(ex.files).forEach(function (f) {
-        html += "<h4 class='file-heading'>Partner file — <code>" + f + "</code></h4>";
+        html += "<h4 class='file-heading'>Partner JSP — <code>" + f + "</code></h4>";
         html += "<pre class='syntax'>" + JspRuntime.highlightJsp(ex.files[f]) + "</pre>";
       });
     }
     html += "</div>";
     return html;
+  }
+
+  function formFieldsHtml(exId, ex) {
+    const params = ex.params || [];
+    if (params.length === 0) return "<p class='lab-meta'>No input fields — click Submit to run <code>" + ex.file + "</code>.</p>";
+    let h = "";
+    params.forEach(function (p) {
+      const type = window.JSP_HTML_FORMS ? JSP_HTML_FORMS.inputType(p.name) : "text";
+      h += "<label class='modal-form-label'>" + (p.label || p.name) +
+        "<input type='" + type + "' name='" + p.name + "' value='" + JspRuntime.escapeHtml(p.value || "") + "' /></label>";
+    });
+    return h;
+  }
+
+  function formView(exId, ex) {
+    const formFile = JSP_HTML_FORMS.formFileName(ex.file);
+    let html = "<div class='modal-section modal-form'>";
+    html += "<p class='lab-meta'>Same as <code>forms/" + formFile + "</code> — type here and Submit. Simulator runs <code>" + ex.file + "</code>.</p>";
+    html += "<form id='labLiveForm' class='live-form'>";
+    html += formFieldsHtml(exId, ex);
+    html += "<button type='submit' class='btn btn-teal'>Submit → " + ex.file + "</button>";
+    html += "</form>";
+    html += "<p class='lab-meta' style='margin-top:12px'>On Tomcat: open <code>forms/" + formFile + "</code> in browser, then form posts to <code>" + ex.file + "</code>.</p>";
+    html += "</div>";
+    return html;
+  }
+
+  function bindLiveForm(exId, ex) {
+    const form = $("#labLiveForm");
+    if (!form) return;
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const params = {};
+      $$("input, select", form).forEach(function (inp) {
+        if (inp.name) params[inp.name] = inp.value;
+      });
+      openModal("Run — " + ex.file, runFlowView(exId, ex, params, "jsp"), "run");
+      bindRunBack(exId, ex);
+    });
   }
 
   /* DEPLOY — steps only */
@@ -113,7 +158,7 @@
     return html;
   }
 
-  function runView(ex, params) {
+  function jspResultHtml(ex, params) {
     const src = preprocess(ex.jsp, ex.files);
     const extras = { fileName: ex.file };
     if (ex.extras && ex.extras.exceptionMessage) extras.exception = new Error(ex.extras.exceptionMessage);
@@ -123,30 +168,120 @@
       result = JspRuntime.run(errSrc, params, { fileName: result.errorPage, exception: result.exception || new Error(result.error) });
     }
     const status = result.ok
-      ? "<span class='out-ok'>HTTP 200 · executed in educational container</span>"
+      ? "<span class='out-ok'>HTTP 200 · JSP executed</span>"
       : "<span class='out-err'>HTTP 500 · " + JspRuntime.escapeHtml(result.error || "error") + "</span>";
     const page = result.ok
       ? result.html
       : "<pre class='out-err'>" + JspRuntime.escapeHtml(result.error || "Error") + "</pre>";
+    const postNote = Object.keys(params || {}).length
+      ? "<div class='post-data'>POST data: " + Object.keys(params).map(function (k) {
+          return "<code>" + JspRuntime.escapeHtml(k) + "=" + JspRuntime.escapeHtml(params[k]) + "</code>";
+        }).join(" · ") + "</div>"
+      : "";
+    return {
+      status: status,
+      page: page,
+      postNote: postNote,
+      jspUrl: "http://localhost:8080/jsp/" + ex.file
+    };
+  }
+
+  function runFlowView(exId, ex, params, phase) {
+    const formFile = JSP_HTML_FORMS.formFileName(ex.file);
+    const formPath = JSP_HTML_FORMS.formPath(ex.file);
+    const formUrl = "http://localhost:8080/jsp/" + formPath;
+
+    if (phase !== "jsp") {
+      let html = "<div class='modal-section modal-section-run run-flow'>";
+      html += "<div class='run-steps'><span class='active'>1. HTML form</span><i></i><span>2. JSP execute</span></div>";
+      html += "<p class='lab-meta'><b>Step 1:</b> HTML form mein values type karo → Submit dabao → phir JSP chalegi.</p>";
+      html += "<div class='browser-frame browser-frame-sm'>";
+      html += "<div class='browser-bar'><span class='dots'><i></i><i></i><i></i></span>";
+      html += "<div class='url'>" + formUrl + "</div></div>";
+      html += "<div class='browser-page browser-form-page'>";
+      html += "<form id='labRunForm' class='live-form'>";
+      html += formFieldsHtml(exId, ex);
+      html += "<button type='submit' class='btn btn-teal'>Submit → " + ex.file + "</button>";
+      html += "</form></div></div>";
+      html += "<p class='lab-meta'>Form file: <code>forms/" + formFile + "</code> · action=<code>/jsp/" + ex.file + "</code> method=<code>post</code></p>";
+      html += "</div>";
+      return html;
+    }
+
+    const out = jspResultHtml(ex, params);
+    let html = "<div class='modal-section modal-section-run run-flow'>";
+    html += "<div class='run-steps'><span class='done'>1. HTML form ✓</span><i></i><span class='active'>2. JSP execute</span></div>";
+    html += "<p class='lab-meta'><b>Step 1 done</b> — form submit hua. <b>Step 2</b> — Tomcat ab JSP chalata hai.</p>";
+    html += "<div class='flow-strip run-flow-mini'>";
+    html += "<span>" + formFile + "</span><i></i><span>POST</span><i></i><span>" + ex.file + "</span><i></i><span>HTML output</span>";
+    html += "</div>";
+    html += "<p>" + out.status + "</p>";
+    html += out.postNote;
+    html += "<div class='browser-frame'>";
+    html += "<div class='browser-bar'><span class='dots'><i></i><i></i><i></i></span>";
+    html += "<div class='url'>" + out.jspUrl + "</div></div>";
+    html += "<div class='browser-page'>" + out.page + "</div></div>";
+    html += "<button type='button' class='btn btn-outline btn-sm run-back-form' id='runBackForm'>← Wapas HTML form</button>";
+    html += "</div>";
+    return html;
+  }
+
+  function bindRunFlow(exId, ex) {
+    const form = $("#labRunForm");
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const params = {};
+        $$("input, select", form).forEach(function (inp) {
+          if (inp.name) params[inp.name] = inp.value;
+        });
+        openModal("Run — " + ex.file, runFlowView(exId, ex, params, "jsp"), "run");
+        bindRunBack(exId, ex);
+      });
+    }
+    bindRunBack(exId, ex);
+  }
+
+  function bindRunBack(exId, ex) {
+    const back = $("#runBackForm");
+    if (back) {
+      back.addEventListener("click", function () {
+        openModal("Run — " + JSP_HTML_FORMS.formFileName(ex.file) + " → " + ex.file, runFlowView(exId, ex, null, "form"), "run");
+        bindRunFlow(exId, ex);
+      });
+    }
+  }
+
+  function runView(ex, params) {
+    const out = jspResultHtml(ex, params);
     return "<div class='modal-section modal-section-run'>" +
-      "<p>" + status + "</p>" +
+      "<p>" + out.status + "</p>" + out.postNote +
       "<div class='browser-frame'><div class='browser-bar'><span class='dots'><i></i><i></i><i></i></span>" +
-      "<div class='url'>http://localhost:8080/jsp/" + ex.file + buildQuery(params) + "</div></div>" +
-      "<div class='browser-page'>" + page + "</div></div></div>";
+      "<div class='url'>" + out.jspUrl + "</div></div>" +
+      "<div class='browser-page'>" + out.page + "</div></div></div>";
   }
 
   function filesSummary(exId, ex, box) {
     if (!window.JSP_DEPLOY) return "";
     const files = JSP_DEPLOY.getRequiredFiles(exId, ex);
     const names = files.map(function (f) {
-      return "<code>" + f.name + "</code>" + (f.type === "Java" ? " (Java)" : "");
+      return "<code>" + f.name + "</code>" + (f.type === "Java" ? " (Java)" : "") + (f.type === "HTML" ? " (form)" : "");
     }).join(", ");
-    const url = JSP_DEPLOY.buildUrl(exId, ex, collectParams(box));
-    let html = "<div class='lab-files'><b>Files:</b> " + names;
-    html += "<br><b>Run URL:</b> <code class='run-url'>" + url + "</code>";
+    const formFile = window.JSP_HTML_FORMS ? JSP_HTML_FORMS.formPath(ex.file) : "";
+    let html = "<div class='lab-files lab-form-flow'>";
+    if (formFile) {
+      html += "<b>Flow:</b> <a href='" + formFile + "' target='_blank' rel='noopener'>" + formFile + "</a>";
+      html += " → <code>" + ex.file + "</code><br>";
+    }
+    html += "<b>All files:</b> " + names;
+    html += "<br><b>Tomcat:</b> copy <code>forms/</code> + JSP files to <code>webapps/jsp/</code>";
     if (ex.industry) html += "<br><b>Industry:</b> " + ex.industry;
     html += "</div>";
     return html;
+  }
+
+  function formFileLabel(ex) {
+    return window.JSP_HTML_FORMS ? JSP_HTML_FORMS.formFileName(ex.file) + " + " + ex.file : ex.file;
   }
 
   function wireLabs() {
@@ -160,28 +295,34 @@
       if (actions && !actions.innerHTML.trim()) {
         actions.innerHTML =
           "<button class='btn btn-gold btn-sm' data-act='trace' title='Show execution flow'>Trace</button>" +
-          "<button class='btn btn-outline btn-sm' data-act='source' title='Show source code only'>Source code</button>" +
+          "<button class='btn btn-outline btn-sm' data-act='form' title='Open HTML input form'>HTML form</button>" +
+          "<button class='btn btn-outline btn-sm' data-act='source' title='HTML + JSP source code'>Source code</button>" +
           "<button class='btn btn-navy btn-sm' data-act='deploy' title='Show deploy steps only'>Deploy</button>" +
-          "<button class='btn btn-teal btn-sm' data-act='run' title='Run in browser simulator'>Run online</button>";
+          "<button class='btn btn-teal btn-sm' data-act='run' title='Step 1: HTML form → Step 2: JSP execute'>Run online</button>";
       }
       const body = $(".lab-body", box);
+      if (body) {
+        $$(".params", body).forEach(function (p) { p.style.display = "none"; });
+      }
       if (body && !body.querySelector(".lab-files")) {
         body.insertAdjacentHTML("beforeend", filesSummary(id, ex, box));
       }
-      $$("[data-param]", box).forEach(function (inp) {
-        inp.addEventListener("input", function () {
-          const el = body && body.querySelector(".run-url");
-          if (el) el.textContent = JSP_DEPLOY.buildUrl(id, ex, collectParams(box));
-        });
-      });
       actions && actions.addEventListener("click", function (e) {
         const btn = e.target.closest("[data-act]");
         if (!btn) return;
-        const params = collectParams(box);
+        const params = {};
+        (ex.params || []).forEach(function (p) { params[p.name] = p.value; });
         const act = btn.getAttribute("data-act");
-        if (act === "source") openModal("Source code — " + ex.file, sourceView(ex), "source");
-        if (act === "deploy") openModal("Deploy steps — Tomcat 11 / " + ex.file, deployView(id, ex), "deploy");
-        if (act === "run") openModal("Run online — " + ex.file, runView(ex, params), "run");
+        if (act === "source") openModal("Source — " + formFileLabel(ex), sourceView(id, ex), "source");
+        if (act === "form") {
+          openModal("HTML form — " + JSP_HTML_FORMS.formFileName(ex.file), formView(id, ex), "form");
+          bindLiveForm(id, ex);
+        }
+        if (act === "deploy") openModal("Deploy — " + formFileLabel(ex), deployView(id, ex), "deploy");
+        if (act === "run") {
+          openModal("Run — " + JSP_HTML_FORMS.formFileName(ex.file) + " → " + ex.file, runFlowView(id, ex, null, "form"), "run");
+          bindRunFlow(id, ex);
+        }
         if (act === "trace") {
           openModal("Execution flow — " + ex.file, traceView(ex, params), "trace");
           requestAnimationFrame(function () {

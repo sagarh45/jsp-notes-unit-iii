@@ -1,0 +1,1 @@
+<h3>Admin Home</h3><p>Manage users, subjects and reports.</p>

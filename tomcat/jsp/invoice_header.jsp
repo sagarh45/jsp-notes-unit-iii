@@ -1,0 +1,1 @@
+<div style='padding:8px;background:#fff3d6;border-radius:8px;'><b>ShopMart Tax Invoice</b> | GSTIN: 27AABCU9603R1ZM</div>

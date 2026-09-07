@@ -1,0 +1,1 @@
+<h3>Student Home</h3><p>Timetable, attendance and ICA marks.</p>

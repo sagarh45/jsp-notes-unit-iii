@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Implicit object — request — Input Form</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", system-ui, sans-serif; max-width: 440px; margin: 32px auto; padding: 20px; color: #1a2332; background: #f6f3ee; }
+    .card { background: #fff; border: 1px solid #e4ddd2; border-radius: 14px; padding: 22px; box-shadow: 0 8px 24px rgba(15,39,68,0.06); }
+    h2 { margin: 0 0 6px; font-size: 20px; color: #0f2744; }
+    .hint { color: #5b677a; font-size: 14px; line-height: 1.5; margin: 0 0 16px; }
+    .note { background: #fff7e8; border-left: 4px solid #e8a317; padding: 10px 12px; font-size: 13px; margin: 0 0 14px; border-radius: 0 8px 8px 0; }
+    label { display: block; margin: 12px 0 4px; font-weight: 600; font-size: 14px; color: #0f2744; }
+    input, select { width: 100%; padding: 10px 12px; border: 1px solid #e4ddd2; border-radius: 8px; font: inherit; }
+    button { margin-top: 18px; width: 100%; padding: 12px; background: #0d7377; color: #fff; border: 0; border-radius: 10px; font: inherit; font-weight: 600; cursor: pointer; }
+    button:hover { background: #14919b; }
+    .flow { margin-top: 16px; font-size: 12px; color: #5b677a; text-align: center; }
+    code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Implicit object — request</h2>
+    <p class="hint">Open this form at <code>http://localhost:8080/jsp/forms/req_form.html</code>. Type values and click <b>Submit</b> → data goes to <code>req.jsp</code> via POST.</p>
+    
+    <form action="/jsp/req.jsp" method="post">
+<label for='roll'>roll</label>
+<input type='text' id='roll' name='roll' value='21IT045' required />
+<label for='course'>course</label>
+<input type='text' id='course' name='course' value='Advanced Java' required />
+      <button type="submit">Submit → req.jsp</button>
+    </form>
+    <p class="flow">req_form.html → POST → /jsp/req.jsp</p>
+  </div>
+</body>
+</html>

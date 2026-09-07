@@ -201,6 +201,29 @@ tr:nth-child(even) td { background: #faf8f4; }
 .lab-files { margin: 8px 0 0; padding: 10px 12px; background: #f8fafc; border: 1px solid var(--line); border-radius: 10px; font-size: 13px; }
 .lab-files b { color: var(--navy); }
 .lab-files code { background: #fff; padding: 1px 5px; border: 1px solid var(--line); border-radius: 4px; font-size: 12px; }
+.lab-form-flow a { color: var(--teal); font-weight: 600; text-decoration: none; }
+.lab-form-flow a:hover { text-decoration: underline; }
+.modal-form .live-form { max-width: 420px; margin: 12px 0; }
+.modal-form-label { display: block; margin: 10px 0 4px; font-weight: 600; font-size: 14px; color: var(--navy); }
+.modal-form-label input { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; font: inherit; margin-top: 4px; }
+.deploy-steps { margin: 8px 0 12px 20px; line-height: 1.6; font-size: 14px; }
+.deploy-steps li { margin-bottom: 4px; }
+.deploy-process { background: #f8fafc; border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px 14px 32px; margin-bottom: 16px; }
+.deploy-flow { margin-bottom: 12px; }
+.run-steps { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 0 0 14px; font-size: 13px; font-weight: 600; }
+.run-steps span { padding: 6px 12px; border-radius: 999px; background: #eef2f7; color: var(--muted); border: 1px solid var(--line); }
+.run-steps span.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+.run-steps span.done { background: #e8f5e9; color: var(--ok); border-color: #b7dfc9; }
+.run-steps i { width: 18px; height: 2px; background: var(--line); display: inline-block; }
+.run-steps-static span.done { background: #e8f5f0; color: var(--teal); border-color: #b8ddd8; }
+.run-flow-mini { margin: 10px 0 14px; font-size: 12px; }
+.browser-frame-sm { max-width: 480px; }
+.browser-form-page { padding: 16px; background: #f6f3ee; }
+.browser-form-page .live-form { margin: 0; }
+.post-data { font-size: 13px; color: var(--muted); margin: 8px 0 12px; padding: 8px 10px; background: #f8fafc; border-radius: 8px; border: 1px solid var(--line); }
+.post-data code { background: #fff; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+.run-back-form { margin-top: 12px; }
+.syntax-html { max-height: 45vh; overflow: auto; }
 .ica-theory { border: 2px solid var(--line); margin-bottom: 8px; }
 .ica-step-label {
   display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;

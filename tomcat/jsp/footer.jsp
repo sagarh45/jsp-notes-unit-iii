@@ -1,0 +1,1 @@
+<hr><small>Static include footer — compiled into the same servlet.</small>

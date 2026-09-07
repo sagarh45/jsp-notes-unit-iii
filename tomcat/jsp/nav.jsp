@@ -1,0 +1,1 @@
+<nav style='background:#0d7377;color:#fff;padding:8px;border-radius:8px;'>Home | Academics | Results | Contact</nav>
