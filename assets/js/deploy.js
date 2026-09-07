@@ -351,7 +351,7 @@ window.JSP_DEPLOY = {
     const main = ex.file || (m.files && m.files[0]);
     let html = "<div class='deploy-panel'>";
 
-    html += "<h4>Run process — HTML form pehle, phir JSP</h4>";
+    html += "<h4>Run process — HTML form first, then JSP</h4>";
     html += "<div class='flow-strip deploy-flow'>";
     html += "<span>① HTML form</span><i></i><span>② User types</span><i></i><span>③ Submit POST</span><i></i><span>④ JSP runs</span><i></i><span>⑤ Output</span>";
     html += "</div>";
@@ -361,11 +361,11 @@ window.JSP_DEPLOY = {
       html += "<ol class='deploy-steps deploy-process'>";
       html += "<li><b>Deploy files</b> — copy <code>" + formPath + "</code> + <code>" + main + "</code> (+ partner JSP/Java if any) to <code>webapps/jsp/</code></li>";
       html += "<li><b>Start Tomcat</b> — <code>bin\\startup.bat</code></li>";
-      html += "<li><b>Open HTML form</b> — browser mein <code>" + this.baseUrl + "/" + formPath + "</code></li>";
-      html += "<li><b>User input</b> — text fields mein values type karo (name, price, etc.)</li>";
-      html += "<li><b>Submit</b> — form <code>action=\"/jsp/" + main + "\" method=\"post\"</code> se JSP ko data bhejta hai</li>";
-      html += "<li><b>JSP execute</b> — Tomcat <code>" + main + "</code> chalata hai, <code>request.getParameter()</code> se data read hota hai</li>";
-      html += "<li><b>Response</b> — browser mein JSP ka HTML output dikhta hai</li>";
+      html += "<li><b>Open HTML form</b> — in the browser open <code>" + this.baseUrl + "/" + formPath + "</code></li>";
+      html += "<li><b>User input</b> — type values in the text fields (name, price, etc.)</li>";
+      html += "<li><b>Submit</b> — the form sends data to the JSP with <code>action=\"/jsp/" + main + "\" method=\"post\"</code></li>";
+      html += "<li><b>JSP execute</b> — Tomcat runs <code>" + main + "</code>; data is read with <code>request.getParameter()</code></li>";
+      html += "<li><b>Response</b> — the JSP HTML output appears in the browser</li>";
       html += "</ol>";
     }
 
@@ -396,8 +396,8 @@ window.JSP_DEPLOY = {
       const formPath = "forms/" + JSP_HTML_FORMS.formFileName(main);
       html += "<p class='lab-meta'><b>Step 1 — HTML form URL:</b></p>";
       html += "<pre class='syntax'>" + this.escape(this.baseUrl + "/" + formPath) + "</pre>";
-      html += "<p class='lab-meta'><b>Step 2 — JSP (form submit ke baad):</b></p>";
-      html += "<pre class='syntax'>" + this.escape(this.baseUrl + "/" + main) + "  ← POST with form data</pre>";
+      html += "<p class='lab-meta'><b>Step 2 — JSP (after form submit):</b></p>";
+      html += "<pre class='syntax'>" + this.escape(this.baseUrl + "/" + main) + "  &larr; POST with form data</pre>";
     } else {
       html += "<pre class='syntax'>" + this.escape(this.buildUrl(exId, ex, null)) + "</pre>";
     }

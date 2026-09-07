@@ -52,9 +52,9 @@
         <p>
           Theory, syntax of every important API, translation-to-servlet view, diagrams, real applications,
           and runnable programs. Every lab has separate buttons:
-          <b>Trace</b> (flow only), <b>HTML form</b> (type input), <b>Source code</b> (HTML form + JSP — dono files),
+          <b>Trace</b> (flow only), <b>HTML form</b> (type input), <b>Source code</b> (HTML form + JSP — both files),
           <b>Deploy</b> (HTML → JSP process + Tomcat steps),
-          and <b>Run online</b> (pehle HTML form, Submit ke baad JSP execute).
+          and <b>Run online</b> (HTML form first, then JSP executes after Submit).
         </p>
         <div class="chip-row">
           <span class="chip">Introduction</span>
@@ -1527,8 +1527,8 @@ jspc.bat -webapp ..\webapps\jsp -compile</pre>
 
         <div class="callout ok">
           <strong>Run any program — HTML form first, then JSP</strong>
-          Har program ke liye alag <b>HTML form</b> hai (<code>forms/hello_form.html</code> etc.). User wahan type karta hai → Submit → JSP chalti hai.
-          JSP input <code>request.getParameter()</code> se leti hai — chahe form se aaye ya URL se.
+          Each program has a separate <b>HTML form</b> (<code>forms/hello_form.html</code>, etc.). The user types input there, clicks Submit, and the JSP runs.
+          The JSP reads input with <code>request.getParameter()</code> — from a form POST or from a URL query string.
           Example: open <code>http://localhost:8080/jsp/forms/table_form.html</code> → type n=12 → Submit → <code>table.jsp</code> runs.
         </div>
 
@@ -1634,7 +1634,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica1-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead">Har program: <b>Source</b> (HTML + JSP dono), <b>Deploy</b> (process), <b>Run online</b> (pehle form → phir JSP), ya <b>Trace</b>.</p>
+          <p class="ica-run-lead">For each program use <b>Source</b> (HTML + JSP), <b>Deploy</b> (process), <b>Run online</b> (form first, then JSP), or <b>Trace</b>.</p>
         </div>
         <div class="example-lab" data-example="ica1_elements">
           <div class="lab-head">
@@ -1666,7 +1666,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica2-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead">Pehle <b>employee_register_form.html</b> submit karo, phir same browser mein <b>employee_dashboard_form.html</b> kholo.</p>
+          <p class="ica-run-lead">Submit <b>employee_register_form.html</b> first, then open <b>employee_dashboard_form.html</b> in the same browser.</p>
         </div>
         <div class="example-lab" data-example="ica2_register">
           <div class="lab-head">
@@ -1679,7 +1679,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
               <label>name <input data-param="name" value="Rahul Deshmukh" /></label>
               <label>dept <input data-param="dept" value="IT" /></label>
             </div>
-            <p class="lab-meta"><b>File:</b> <code>employee_register.jsp</code> · Session + application scope set hota hai</p>
+            <p class="lab-meta"><b>File:</b> <code>employee_register.jsp</code> · Sets session + application scope</p>
           </div>
         </div>
         <div class="example-lab" data-example="ica2_profile">
@@ -1688,7 +1688,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
             <div class="lab-actions"></div>
           </div>
           <div class="lab-body">
-            <p class="lab-meta"><b>File:</b> <code>employee_dashboard.jsp</code> · URL params nahi — session se profile read</p>
+            <p class="lab-meta"><b>File:</b> <code>employee_dashboard.jsp</code> · No URL params — reads profile from session</p>
           </div>
         </div>
       </section>
@@ -1698,7 +1698,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica3-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead"><code>Cart.java</code> compile karo, phir <b>shop_cart_form.html</b> submit karo, uske baad <b>shop_invoice_form.html</b>.</p>
+          <p class="ica-run-lead">Compile <code>Cart.java</code>, then submit <b>shop_cart_form.html</b>, then <b>shop_invoice_form.html</b>.</p>
         </div>
         <div class="example-lab" data-example="ica3_cart">
           <div class="lab-head">
@@ -1730,7 +1730,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         <div id="ica4-theory"></div>
         <div class="ica-run-block">
           <div class="ica-step-label">Step 3 · Programs — run, trace &amp; deploy</div>
-          <p class="ica-run-lead">Insurance mein invalid input pe <code>error.jsp</code> forward hota hai. ATM mein try-catch se friendly message.</p>
+          <p class="ica-run-lead">Invalid insurance input forwards to <code>error.jsp</code>. The ATM program uses try-catch for a friendly message.</p>
         </div>
         <div class="example-lab" data-example="ica4_result">
           <div class="lab-head">
@@ -1821,7 +1821,7 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
         </div>
         <div class="callout exam">
           <strong>How to use this file in lab oral</strong>
-          Har ICA section mein pehle <b>Complete problem statement</b>, phir <b>Important details</b> (Given, Requirements, Algorithm, Viva), phir <b>Programs</b> — Trace / Source code / Deploy / Run online.
+          Each ICA section starts with the <b>Complete problem statement</b>, then <b>Important details</b> (Given, Requirements, Algorithm, Viva), then <b>Programs</b> — Trace / Source code / Deploy / Run online.
         </div>
       </section>
 

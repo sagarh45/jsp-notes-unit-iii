@@ -76,7 +76,7 @@
     const formFile = window.JSP_HTML_FORMS ? JSP_HTML_FORMS.formFileName(ex.file) : "";
     let html = "<div class='modal-section modal-section-source'>";
     html += "<div class='run-steps run-steps-static'><span class='done'>1. HTML form</span><i></i><span class='done'>2. JSP page</span></div>";
-    html += "<p class='lab-meta'>Dono alag files — user <b>HTML form</b> mein type karta hai → Submit → <b>JSP</b> <code>request.getParameter()</code> se data leti hai.</p>";
+    html += "<p class='lab-meta'>Two separate files — the user types in the <b>HTML form</b>, clicks Submit, and the <b>JSP</b> reads data with <code>request.getParameter()</code>.</p>";
     if (window.JSP_HTML_FORMS) {
       html += "<h4 class='file-heading'>File 1 — HTML form — <code>forms/" + formFile + "</code></h4>";
       html += "<pre class='syntax syntax-html'>" + JspRuntime.escapeHtml(JSP_HTML_FORMS.buildFormHtml(exId, ex)) + "</pre>";
@@ -194,7 +194,7 @@
     if (phase !== "jsp") {
       let html = "<div class='modal-section modal-section-run run-flow'>";
       html += "<div class='run-steps'><span class='active'>1. HTML form</span><i></i><span>2. JSP execute</span></div>";
-      html += "<p class='lab-meta'><b>Step 1:</b> HTML form mein values type karo → Submit dabao → phir JSP chalegi.</p>";
+      html += "<p class='lab-meta'><b>Step 1:</b> Type values in the HTML form, then click Submit — the JSP will run next.</p>";
       html += "<div class='browser-frame browser-frame-sm'>";
       html += "<div class='browser-bar'><span class='dots'><i></i><i></i><i></i></span>";
       html += "<div class='url'>" + formUrl + "</div></div>";
@@ -211,7 +211,7 @@
     const out = jspResultHtml(ex, params);
     let html = "<div class='modal-section modal-section-run run-flow'>";
     html += "<div class='run-steps'><span class='done'>1. HTML form ✓</span><i></i><span class='active'>2. JSP execute</span></div>";
-    html += "<p class='lab-meta'><b>Step 1 done</b> — form submit hua. <b>Step 2</b> — Tomcat ab JSP chalata hai.</p>";
+    html += "<p class='lab-meta'><b>Step 1 complete</b> — form submitted. <b>Step 2</b> — Tomcat now executes the JSP.</p>";
     html += "<div class='flow-strip run-flow-mini'>";
     html += "<span>" + formFile + "</span><i></i><span>POST</span><i></i><span>" + ex.file + "</span><i></i><span>HTML output</span>";
     html += "</div>";
@@ -221,7 +221,7 @@
     html += "<div class='browser-bar'><span class='dots'><i></i><i></i><i></i></span>";
     html += "<div class='url'>" + out.jspUrl + "</div></div>";
     html += "<div class='browser-page'>" + out.page + "</div></div>";
-    html += "<button type='button' class='btn btn-outline btn-sm run-back-form' id='runBackForm'>← Wapas HTML form</button>";
+    html += "<button type='button' class='btn btn-outline btn-sm run-back-form' id='runBackForm'>&larr; Back to HTML form</button>";
     html += "</div>";
     return html;
   }
