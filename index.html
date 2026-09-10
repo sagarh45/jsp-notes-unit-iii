@@ -763,37 +763,158 @@ Square of 12 = &lt;%= square(12) %&gt;</pre>
           </div>
         </div>
 
-        <h3>5.3 taglib directive</h3>
+        <h3 id="taglib">5.3 taglib directive — complete topic</h3>
+
+        <div class="callout ok">
+          <strong>Start here — sample example (same task, two ways)</strong>
+          <p><b>Task:</b> Print numbers 1 to 5 in an HTML list.</p>
+        </div>
+
+        <h4 class="sub-heading">❌ Without taglib (scriptlet only — no tag library)</h4>
+        <p class="lab-meta">No <code>&lt;%@ taglib %&gt;</code> needed. Java code is mixed inside HTML. Works in basic labs but is harder to read.</p>
+        <pre class="syntax">&lt;html&gt;&lt;body&gt;
+&lt;ul&gt;
+&lt;%
+  <span class="k">for</span> (<span class="k">int</span> i = 1; i &lt;= 5; i++) {
+    out.println(<span class="s">"&lt;li&gt;"</span> + i + <span class="s">"&lt;/li&gt;"</span>);
+  }
+%&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+        <table>
+          <tr><th>Point</th><th>Without taglib</th></tr>
+          <tr><td>Extra JAR files</td><td>Not required</td></tr>
+          <tr><td>Directive needed?</td><td>No</td></tr>
+          <tr><td>Code style</td><td>Java + HTML mixed (scriptlet)</td></tr>
+          <tr><td>Best for</td><td>Syllabus labs, ICA with scriptlets</td></tr>
+        </table>
+
+        <h4 class="sub-heading">✅ With taglib (JSTL — clean HTML tags)</h4>
+        <p class="lab-meta">First register the library, then use tags like <code>&lt;c:forEach&gt;</code>. Needs JSTL JAR in <code>WEB-INF/lib</code>.</p>
+        <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;ul&gt;
+&lt;c:forEach var=<span class="s">"i"</span> begin=<span class="s">"1"</span> end=<span class="s">"5"</span>&gt;
+  &lt;li&gt;&lt;c:out value=<span class="s">"${i}"</span> /&gt;&lt;/li&gt;
+&lt;/c:forEach&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+        <table>
+          <tr><th>Point</th><th>With taglib</th></tr>
+          <tr><td>Extra JAR files</td><td>JSTL JARs in <code>WEB-INF/lib</code></td></tr>
+          <tr><td>Directive needed?</td><td>Yes — <code>&lt;%@ taglib prefix="c" uri="..." %&gt;</code></td></tr>
+          <tr><td>Code style</td><td>HTML-like tags; almost no Java in the page</td></tr>
+          <tr><td>Best for</td><td>Real projects, clean JSP views, exam theory on JSTL</td></tr>
+        </table>
+
+        <div class="callout def">
+          <strong>One-line difference</strong>
+          <b>Without taglib</b> → you write Java in <code>&lt;% %&gt;</code> scriptlets.
+          <b>With taglib</b> → you register a tag library once, then use ready-made tags like <code>&lt;c:if&gt;</code> and <code>&lt;c:forEach&gt;</code>.
+          Both produce the same HTML in the browser; the approach is different.
+        </div>
 
         <div class="theory-summary">
           <h4>In simple words</h4>
           <p>
-            The <b>taglib directive</b> tells the JSP container: “I want to use tags from this tag library.”
-            After registering the library with a <b>prefix</b>, you write tags like <code>&lt;c:forEach&gt;</code> or <code>&lt;my:studentRow&gt;</code>
-            instead of long scriptlets. It is processed at <b>translation time</b> — it does not print anything in the browser by itself.
+            The <b>taglib directive</b> is like adding a <b>plugin dictionary</b> to your JSP page.
+            You tell Tomcat: “I will use tags from this library — call them with prefix <code>c</code>.”
+            After that, <code>&lt;c:forEach&gt;</code> works. Without the directive, Tomcat does not know what <code>c:</code> means and throws an error.
+            The directive itself is processed at <b>translation time</b> and never appears in the browser.
           </p>
         </div>
 
         <div class="callout def">
           <strong>Definition</strong>
           The taglib directive has the syntax <code>&lt;%@ taglib prefix="prefixName" uri="uniqueURI" %&gt;</code>
-          (or <code>tagdir="/WEB-INF/tags"</code> for tag files). It binds a short prefix to a tag library so custom tags and JSTL tags can be used in the JSP.
+          (or <code>tagdir="/WEB-INF/tags"</code> for tag files). It binds a short prefix to a tag library so JSTL tags and custom tags can be used in the JSP.
         </div>
+
+        <h4 class="sub-heading">Without taglib vs with taglib — full comparison</h4>
+        <table>
+          <tr><th>Topic</th><th>Without taglib (scriptlet / expression)</th><th>With taglib (JSTL / custom tags)</th></tr>
+          <tr><td><b>What you write</b></td><td><code>&lt;% Java code %&gt;</code>, <code>&lt;%= value %&gt;</code></td><td><code>&lt;c:if&gt;</code>, <code>&lt;c:forEach&gt;</code>, <code>&lt;my:tag&gt;</code></td></tr>
+          <tr><td><b>Directive required?</b></td><td>No</td><td>Yes — <code>&lt;%@ taglib ... %&gt;</code> at top of page</td></tr>
+          <tr><td><b>When processed</b></td><td>Scriptlet at request time</td><td>Directive at translation time; tags at request time</td></tr>
+          <tr><td><b>Dependencies</b></td><td>Only JSP + JDK</td><td>JSTL JARs or custom TLD / tag files</td></tr>
+          <tr><td><b>Readability</b></td><td>Java mixed in HTML</td><td>HTML-like; view looks like a template</td></tr>
+          <tr><td><b>Loop example</b></td><td><code>&lt;% for(...) { %&gt;</code></td><td><code>&lt;c:forEach&gt;</code></td></tr>
+          <tr><td><b>If condition</b></td><td><code>&lt;% if(...) { %&gt;</code></td><td><code>&lt;c:if test="${...}"&gt;</code></td></tr>
+          <tr><td><b>Print variable</b></td><td><code>&lt;%= name %&gt;</code></td><td><code>&lt;c:out value="${name}"/&gt;</code></td></tr>
+          <tr><td><b>Exam focus</b></td><td>ICA practicals, scriptlet programs</td><td>Theory, viva, JSTL URI, prefix/uri attributes</td></tr>
+          <tr><td><b>jsp: action tags</b></td><td colspan="2">Neither needs taglib — <code>jsp:include</code>, <code>jsp:useBean</code> are built-in</td></tr>
+        </table>
 
         <div class="key-points">
           <h4>Key points to remember</h4>
           <ol>
-            <li><b>Purpose</b> — Register a tag library (JSTL or custom) before using its tags in the page.</li>
-            <li><b>prefix</b> — The namespace for tags, e.g. <code>c</code> in <code>&lt;c:if&gt;</code>. Must be unique per page.</li>
-            <li><b>uri</b> — Logical name of the library; must match the URI in the TLD file or JAR (<code>META-INF/*.tld</code>).</li>
-            <li><b>tagdir</b> — Alternative to <code>uri</code>; points to a folder of <code>.tag</code> / <code>.tagx</code> files (JSP 2.0+).</li>
-            <li><b>Translation time</b> — Like other directives, taglib is handled when Jasper builds the servlet, not at each request.</li>
-            <li><b>JSTL</b> — Standard tag libraries: core (<code>c</code>), SQL (<code>sql</code>), formatting (<code>fmt</code>), XML (<code>x</code>).</li>
-            <li><b>Custom tags</b> — Defined in a <code>.tld</code> (Tag Library Descriptor) or as simple tag files under <code>/WEB-INF/tags</code>.</li>
-            <li><b>Not the same as action tags</b> — Built-in <code>&lt;jsp:include&gt;</code>, <code>&lt;jsp:useBean&gt;</code> do <em>not</em> need a taglib directive.</li>
+            <li><b>Purpose</b> — Register a tag library (JSTL or custom) <em>before</em> using its tags.</li>
+            <li><b>Without taglib</b> — You cannot use <code>&lt;c:forEach&gt;</code> or custom <code>&lt;my:tag&gt;</code>; use scriptlets instead.</li>
+            <li><b>With taglib</b> — Prefix + URI (or tagdir) tells the container which library to load.</li>
+            <li><b>prefix</b> — Short name in tags, e.g. <code>c</code> in <code>&lt;c:if&gt;</code>. Must be unique on the page.</li>
+            <li><b>uri</b> — Logical library ID; must match TLD. Not always a real website URL.</li>
+            <li><b>tagdir</b> — Points to <code>/WEB-INF/tags</code> folder of <code>.tag</code> files (alternative to uri).</li>
+            <li><b>Translation time</b> — Directive runs when JSP becomes servlet; not on every browser click.</li>
+            <li><b>JSTL</b> — Standard libraries: core (<code>c</code>), fmt, sql, xml.</li>
+            <li><b>Not for jsp: tags</b> — <code>&lt;jsp:include&gt;</code> and <code>&lt;jsp:useBean&gt;</code> never need taglib.</li>
           </ol>
         </div>
 
+        <h4 class="sub-heading">Sample example 2 — show user only if logged in</h4>
+        <div class="grid-2">
+          <div class="card tight">
+            <h4>Without taglib</h4>
+            <pre class="syntax">&lt;%
+  String user = (String) session.getAttribute("user");
+  if (user != null) {
+%&gt;
+  &lt;p&gt;Hello &lt;%= user %&gt;&lt;/p&gt;
+&lt;%
+  }
+%&gt;</pre>
+          </div>
+          <div class="card tight">
+            <h4>With taglib (JSTL core)</h4>
+            <pre class="syntax">&lt;%@ taglib prefix="c"
+  uri="http://java.sun.com/jsp/jstl/core" %&gt;
+&lt;c:if test="${sessionScope.user != null}"&gt;
+  &lt;p&gt;Hello &lt;c:out value="${sessionScope.user}"/&gt;&lt;/p&gt;
+&lt;/c:if&gt;</pre>
+          </div>
+        </div>
+        <p class="lab-meta">Same logic — with taglib the page reads like HTML and is easier for designers and students to follow.</p>
+
+        <h4 class="sub-heading">Sample example 3 — student marks table from a list</h4>
+        <div class="grid-2">
+          <div class="card tight">
+            <h4>Without taglib</h4>
+            <pre class="syntax">&lt;table&gt;
+&lt;%
+  java.util.List list = (java.util.List) request.getAttribute("students");
+  for (Object o : list) {
+    Student s = (Student) o;
+%&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;%= s.getName() %&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;%= s.getMarks() %&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;% } %&gt;
+&lt;/table&gt;</pre>
+          </div>
+          <div class="card tight">
+            <h4>With taglib</h4>
+            <pre class="syntax">&lt;%@ taglib prefix="c"
+  uri="http://java.sun.com/jsp/jstl/core" %&gt;
+&lt;table&gt;
+&lt;c:forEach var="s" items="${students}"&gt;
+  &lt;tr&gt;
+    &lt;td&gt;&lt;c:out value="${s.name}"/&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;c:out value="${s.marks}"/&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/c:forEach&gt;
+&lt;/table&gt;</pre>
+          </div>
+        </div>
+
+        <h4 class="sub-heading">Syntax — register taglib on the page</h4>
         <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
 &lt;%@ taglib prefix=<span class="s">"sql"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/sql"</span> %&gt;
 &lt;%@ taglib prefix=<span class="s">"fmt"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/fmt"</span> %&gt;
@@ -803,97 +924,100 @@ Square of 12 = &lt;%= square(12) %&gt;</pre>
         <h4 class="sub-heading">taglib directive attributes</h4>
         <table>
           <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
-          <tr><td><code>prefix</code></td><td>Yes</td><td>Short name used before the colon in a tag, e.g. <code>c</code> → <code>&lt;c:forEach&gt;</code>. Cannot be <code>jsp</code>, <code>jspx</code>, <code>java</code>, <code>javax</code>, <code>sun</code>, or <code>sunw</code>.</td></tr>
-          <tr><td><code>uri</code></td><td>Yes* (*unless tagdir)</td><td>Unique identifier of the tag library. Matches <code>&lt;uri&gt;</code> in the TLD. Often looks like a URL but is only a logical name — the container resolves it from <code>WEB-INF/lib</code> JARs or <code>WEB-INF/tlds</code>.</td></tr>
-          <tr><td><code>tagdir</code></td><td>Yes* (*instead of uri)</td><td>Directory path (must start with <code>/WEB-INF/tags</code>) containing tag files. Example: <code>tagdir="/WEB-INF/tags"</code> → tags like <code>&lt;ui:header&gt;</code>.</td></tr>
+          <tr><td><code>prefix</code></td><td>Yes</td><td>Short name before colon, e.g. <code>c</code> → <code>&lt;c:forEach&gt;</code>. Cannot be <code>jsp</code>, <code>java</code>, etc.</td></tr>
+          <tr><td><code>uri</code></td><td>Yes* (*unless tagdir)</td><td>Library ID matching TLD. Resolved from <code>WEB-INF/lib</code> JARs or <code>WEB-INF/tlds</code>.</td></tr>
+          <tr><td><code>tagdir</code></td><td>Yes* (*instead of uri)</td><td>Folder <code>/WEB-INF/tags</code> with <code>.tag</code> files → <code>&lt;ui:header&gt;</code>.</td></tr>
         </table>
 
         <div class="def-box">
           <dl class="def-item">
             <dt>TLD — Tag Library Descriptor</dt>
-            <dd>An XML file (<code>.tld</code>) that lists custom tags, their attributes, and body content rules. Stored in <code>WEB-INF/</code> or inside a JAR under <code>META-INF/</code>.</dd>
+            <dd>XML file listing custom tags and attributes. Lives in <code>WEB-INF/</code> or <code>META-INF/</code> inside a JAR.</dd>
           </dl>
           <dl class="def-item">
             <dt>JSTL — JSP Standard Tag Library</dt>
-            <dd>Ready-made tags for loops, conditions, formatting, and SQL. Requires JSTL JARs in <code>WEB-INF/lib</code> plus the taglib directive on the page.</dd>
+            <dd>Ready-made tags (loop, if, format). Needs JSTL JAR + taglib directive on the page.</dd>
           </dl>
           <dl class="def-item">
             <dt>Tag file</dt>
-            <dd>A simple custom tag written as a <code>.tag</code> file (mini-JSP) in <code>/WEB-INF/tags</code>. Registered with <code>tagdir</code>, not <code>uri</code>.</dd>
+            <dd>Simple custom tag as <code>.tag</code> file under <code>/WEB-INF/tags</code>. Use <code>tagdir</code>, not <code>uri</code>.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>EL — Expression Language</dt>
+            <dd><code>${sessionScope.user}</code> used inside JSTL tags. Works with taglib; reduces need for scriptlets.</dd>
           </dl>
         </div>
 
         <h4 class="sub-heading">How taglib works (step by step)</h4>
         <ol class="ica-algo">
-          <li>Developer adds <code>&lt;%@ taglib prefix="c" uri="..." %&gt;</code> at the top of the JSP.</li>
-          <li>At translation time, Jasper looks up the URI in TLD files and JARs on the classpath.</li>
-          <li>The prefix is mapped to that library’s tag handlers.</li>
-          <li>At runtime, tags like <code>&lt;c:forEach&gt;</code> run Java code behind the scenes — cleaner than scriptlets.</li>
-          <li>Output is normal HTML sent to the browser; the directive itself never appears in the response.</li>
+          <li>Add <code>&lt;%@ taglib prefix="c" uri="..." %&gt;</code> at the top of the JSP.</li>
+          <li>At translation time, Jasper finds the TLD/JAR for that URI.</li>
+          <li>Prefix <code>c</code> is linked to the core tag library.</li>
+          <li>When the page runs, <code>&lt;c:forEach&gt;</code> executes tag handler Java code.</li>
+          <li>Browser receives normal HTML only — directive and tag names are not shown.</li>
         </ol>
 
         <div class="diagram-desc">
-          <h4>Diagram — taglib directive flow</h4>
+          <h4>Diagram — taglib flow (with vs without)</h4>
           <ol>
-            <li><b>JSP page</b> — Contains <code>&lt;%@ taglib ... %&gt;</code> and tags such as <code>&lt;c:if&gt;</code>.</li>
-            <li><b>TLD / tag files</b> — Describe available tags and attributes (<code>WEB-INF/tlds/*.tld</code> or <code>WEB-INF/tags/*.tag</code>).</li>
-            <li><b>Jasper translator</b> — Reads the directive, resolves the library, generates servlet code that invokes tag handlers.</li>
-            <li><b>Generated servlet</b> — Calls tag handler classes (e.g. JSTL <code>ForEachTag</code>) during <code>_jspService()</code>.</li>
-            <li><b>Browser</b> — Receives only HTML output; no trace of the directive or tag markup if the tag produces plain HTML.</li>
+            <li><b>Without taglib</b> — Developer writes scriptlets → Jasper puts Java in <code>_jspService()</code> → HTML out.</li>
+            <li><b>With taglib</b> — Developer writes <code>&lt;%@ taglib %&gt;</code> + <code>&lt;c:tag&gt;</code> → Jasper loads TLD → generates tag handler calls → HTML out.</li>
+            <li><b>TLD / JAR</b> — Required only for the “with taglib” path.</li>
+            <li><b>Browser</b> — Sees the same kind of HTML from both paths if logic is the same.</li>
           </ol>
         </div>
 
         <h4 class="sub-heading">Common JSTL taglib URIs (exam reference)</h4>
         <table>
-          <tr><th>Library</th><th>Typical prefix</th><th>URI (JSTL 1.2)</th><th>Common tags</th></tr>
+          <tr><th>Library</th><th>Prefix</th><th>URI (JSTL 1.2)</th><th>Common tags</th></tr>
           <tr><td>Core</td><td><code>c</code></td><td><code>http://java.sun.com/jsp/jstl/core</code></td><td><code>c:if</code>, <code>c:forEach</code>, <code>c:set</code>, <code>c:out</code></td></tr>
           <tr><td>Formatting</td><td><code>fmt</code></td><td><code>http://java.sun.com/jsp/jstl/fmt</code></td><td><code>fmt:formatDate</code>, <code>fmt:formatNumber</code></td></tr>
           <tr><td>SQL</td><td><code>sql</code></td><td><code>http://java.sun.com/jsp/jstl/sql</code></td><td><code>sql:query</code>, <code>sql:param</code></td></tr>
           <tr><td>XML</td><td><code>x</code></td><td><code>http://java.sun.com/jsp/jstl/xml</code></td><td><code>x:parse</code>, <code>x:out</code></td></tr>
         </table>
-        <p class="lab-meta">Jakarta EE / newer containers may also accept <code>jakarta.tags.core</code> URIs when using Jakarta JSTL — check your Tomcat and JSTL version in the lab.</p>
+        <p class="lab-meta">Tomcat 11: put <code>jakarta.servlet.jsp.jstl-*.jar</code> in <code>WEB-INF/lib</code>. Without JAR, “with taglib” code fails even if the directive is correct.</p>
 
-        <h4 class="sub-heading">Example — JSTL core tags after taglib</h4>
-        <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
-&lt;html&gt;&lt;body&gt;
-&lt;c:if test=<span class="s">"${sessionScope.user != null}"</span>&gt;
-  &lt;p&gt;Hello &lt;c:out value=<span class="s">"${sessionScope.user}"</span> /&gt;&lt;/p&gt;
-&lt;/c:if&gt;
-&lt;c:forEach var=<span class="s">"row"</span> items=<span class="s">"${studentList}"</span>&gt;
-  &lt;tr&gt;&lt;td&gt;&lt;c:out value=<span class="s">"${row.name}"</span>/&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;/c:forEach&gt;
-&lt;/body&gt;&lt;/html&gt;</pre>
+        <h4 class="sub-heading">Deploy checklist — when using taglib (with taglib path only)</h4>
+        <ol class="ica-algo">
+          <li>Add <code>&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %&gt;</code> on the JSP.</li>
+          <li>Copy JSTL JAR files to <code>webapps/jsp/WEB-INF/lib/</code>.</li>
+          <li>Restart Tomcat if needed.</li>
+          <li>Open the JSP — tags run; no scriptlet loop required.</li>
+        </ol>
 
-        <h4 class="sub-heading">Example — custom tag with tagdir</h4>
+        <h4 class="sub-heading">Custom tag example (tagdir)</h4>
         <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"ui"</span> tagdir=<span class="s">"/WEB-INF/tags"</span> %&gt;
 &lt;html&gt;&lt;body&gt;
   &lt;ui:header title=<span class="s">"Student Portal"</span> /&gt;
-  &lt;!-- file: WEB-INF/tags/header.tag --&gt;
+  &lt;!-- WEB-INF/tags/header.tag --&gt;
 &lt;/body&gt;&lt;/html&gt;</pre>
-
-        <h4 class="sub-heading">Scriptlet vs JSTL tag (why taglib matters)</h4>
-        <table>
-          <tr><th>Approach</th><th>Syntax</th><th>Pros</th><th>Cons</th></tr>
-          <tr><td>Scriptlet</td><td><code>&lt;% for(...) { %&gt;</code></td><td>No extra JARs; works in basic syllabus labs</td><td>Java mixed in HTML; harder to maintain</td></tr>
-          <tr><td>JSTL (taglib)</td><td><code>&lt;c:forEach&gt;</code></td><td>Clean HTML; no Java in the view; reusable tags</td><td>Needs JSTL JARs + taglib directive + TLD mapping</td></tr>
-        </table>
 
         <div class="callout warn">
           <strong>Common mistakes</strong>
-          Using a tag without the taglib directive → “Cannot find tag library for URI”.
-          Wrong <code>uri</code> (typo or missing JAR in <code>WEB-INF/lib</code>).
-          Using prefix <code>jsp</code> — reserved and not allowed.
-          Confusing taglib with <code>&lt;jsp:include&gt;</code> — standard action tags need no taglib.
+          Using <code>&lt;c:forEach&gt;</code> without taglib → “Cannot find tag library for URI”.
+          Missing JSTL JAR in <code>WEB-INF/lib</code> → 500 error even with correct directive.
+          Wrong <code>uri</code> typo → library not found.
+          Using prefix <code>jsp</code> — reserved.
+          Thinking <code>jsp:include</code> needs taglib — it does not (built-in action tag).
         </div>
 
         <div class="callout exam">
-          <strong>Oral exam lines</strong>
-          “The taglib directive registers a tag library by prefix and URI (or tagdir). It is processed at translation time.
-          JSTL provides standard tags for core logic and formatting; custom tags are defined in a TLD or as tag files under WEB-INF/tags.
-          Built-in jsp: action tags do not require a taglib directive.”
+          <strong>Oral exam — with vs without taglib</strong>
+          “Without taglib we use scriptlets and expressions — no extra JARs, Java mixed in HTML.
+          With taglib we register a library using prefix and uri, then use JSTL or custom tags for cleaner pages.
+          The taglib directive is processed at translation time. JSP action tags like jsp:useBean do not need taglib.”
         </div>
 
-        <p>JSTL replaces most scriptlets in modern JSP. University ICA still expects classic scriptlets, expressions, and action tags first — but taglib and JSTL are standard syllabus topics for viva and written exams.</p>
+        <div class="section-checklist">
+          <span>Without taglib = scriptlet</span>
+          <span>With taglib = JSTL tags</span>
+          <span>prefix + uri</span>
+          <span>WEB-INF/lib JARs</span>
+          <span>Translation time</span>
+          <span>jsp: tags = no taglib</span>
+        </div>
+
+        <p>University ICA labs often use <b>without taglib</b> (scriptlets + HTML forms + JSP). Written exams and viva also expect <b>with taglib</b> theory — JSTL URIs, attributes, and comparison with scriptlets. Know both paths.</p>
       </section>
 
       <!-- 6 TAGS + IMPLICIT -->
