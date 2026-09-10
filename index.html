@@ -764,20 +764,136 @@ Square of 12 = &lt;%= square(12) %&gt;</pre>
         </div>
 
         <h3>5.3 taglib directive</h3>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            The <b>taglib directive</b> tells the JSP container: “I want to use tags from this tag library.”
+            After registering the library with a <b>prefix</b>, you write tags like <code>&lt;c:forEach&gt;</code> or <code>&lt;my:studentRow&gt;</code>
+            instead of long scriptlets. It is processed at <b>translation time</b> — it does not print anything in the browser by itself.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          The taglib directive has the syntax <code>&lt;%@ taglib prefix="prefixName" uri="uniqueURI" %&gt;</code>
+          (or <code>tagdir="/WEB-INF/tags"</code> for tag files). It binds a short prefix to a tag library so custom tags and JSTL tags can be used in the JSP.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points to remember</h4>
+          <ol>
+            <li><b>Purpose</b> — Register a tag library (JSTL or custom) before using its tags in the page.</li>
+            <li><b>prefix</b> — The namespace for tags, e.g. <code>c</code> in <code>&lt;c:if&gt;</code>. Must be unique per page.</li>
+            <li><b>uri</b> — Logical name of the library; must match the URI in the TLD file or JAR (<code>META-INF/*.tld</code>).</li>
+            <li><b>tagdir</b> — Alternative to <code>uri</code>; points to a folder of <code>.tag</code> / <code>.tagx</code> files (JSP 2.0+).</li>
+            <li><b>Translation time</b> — Like other directives, taglib is handled when Jasper builds the servlet, not at each request.</li>
+            <li><b>JSTL</b> — Standard tag libraries: core (<code>c</code>), SQL (<code>sql</code>), formatting (<code>fmt</code>), XML (<code>x</code>).</li>
+            <li><b>Custom tags</b> — Defined in a <code>.tld</code> (Tag Library Descriptor) or as simple tag files under <code>/WEB-INF/tags</code>.</li>
+            <li><b>Not the same as action tags</b> — Built-in <code>&lt;jsp:include&gt;</code>, <code>&lt;jsp:useBean&gt;</code> do <em>not</em> need a taglib directive.</li>
+          </ol>
+        </div>
+
         <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
 &lt;%@ taglib prefix=<span class="s">"sql"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/sql"</span> %&gt;
 &lt;%@ taglib prefix=<span class="s">"fmt"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/fmt"</span> %&gt;
-&lt;%@ taglib prefix=<span class="s">"my"</span> uri=<span class="s">"/WEB-INF/tlds/college.tld"</span> %&gt;</pre>
+&lt;%@ taglib prefix=<span class="s">"my"</span> uri=<span class="s">"/WEB-INF/tlds/college.tld"</span> %&gt;
+&lt;%@ taglib prefix=<span class="s">"ui"</span> tagdir=<span class="s">"/WEB-INF/tags"</span> %&gt;</pre>
+
+        <h4 class="sub-heading">taglib directive attributes</h4>
         <table>
-          <tr><th>Attribute</th><th>Description</th></tr>
-          <tr><td><code>prefix</code></td><td>Short name used in tags, e.g. <code>&lt;c:forEach&gt;</code></td></tr>
-          <tr><td><code>uri</code></td><td>Unique identifier matching a TLD (not necessarily a download URL)</td></tr>
-          <tr><td><code>tagdir</code> (JSP 2.0)</td><td>Folder of <code>.tag</code> files, e.g. <code>/WEB-INF/tags</code></td></tr>
+          <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
+          <tr><td><code>prefix</code></td><td>Yes</td><td>Short name used before the colon in a tag, e.g. <code>c</code> → <code>&lt;c:forEach&gt;</code>. Cannot be <code>jsp</code>, <code>jspx</code>, <code>java</code>, <code>javax</code>, <code>sun</code>, or <code>sunw</code>.</td></tr>
+          <tr><td><code>uri</code></td><td>Yes* (*unless tagdir)</td><td>Unique identifier of the tag library. Matches <code>&lt;uri&gt;</code> in the TLD. Often looks like a URL but is only a logical name — the container resolves it from <code>WEB-INF/lib</code> JARs or <code>WEB-INF/tlds</code>.</td></tr>
+          <tr><td><code>tagdir</code></td><td>Yes* (*instead of uri)</td><td>Directory path (must start with <code>/WEB-INF/tags</code>) containing tag files. Example: <code>tagdir="/WEB-INF/tags"</code> → tags like <code>&lt;ui:header&gt;</code>.</td></tr>
         </table>
-        <pre class="syntax">&lt;c:if test=<span class="s">"${sessionScope.user != null}"</span>&gt;
-  Hello ${sessionScope.user}
-&lt;/c:if&gt;</pre>
-        <p>JSTL replaces most scriptlets in modern JSP. ICA still expects you to know classic elements first.</p>
+
+        <div class="def-box">
+          <dl class="def-item">
+            <dt>TLD — Tag Library Descriptor</dt>
+            <dd>An XML file (<code>.tld</code>) that lists custom tags, their attributes, and body content rules. Stored in <code>WEB-INF/</code> or inside a JAR under <code>META-INF/</code>.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>JSTL — JSP Standard Tag Library</dt>
+            <dd>Ready-made tags for loops, conditions, formatting, and SQL. Requires JSTL JARs in <code>WEB-INF/lib</code> plus the taglib directive on the page.</dd>
+          </dl>
+          <dl class="def-item">
+            <dt>Tag file</dt>
+            <dd>A simple custom tag written as a <code>.tag</code> file (mini-JSP) in <code>/WEB-INF/tags</code>. Registered with <code>tagdir</code>, not <code>uri</code>.</dd>
+          </dl>
+        </div>
+
+        <h4 class="sub-heading">How taglib works (step by step)</h4>
+        <ol class="ica-algo">
+          <li>Developer adds <code>&lt;%@ taglib prefix="c" uri="..." %&gt;</code> at the top of the JSP.</li>
+          <li>At translation time, Jasper looks up the URI in TLD files and JARs on the classpath.</li>
+          <li>The prefix is mapped to that library’s tag handlers.</li>
+          <li>At runtime, tags like <code>&lt;c:forEach&gt;</code> run Java code behind the scenes — cleaner than scriptlets.</li>
+          <li>Output is normal HTML sent to the browser; the directive itself never appears in the response.</li>
+        </ol>
+
+        <div class="diagram-desc">
+          <h4>Diagram — taglib directive flow</h4>
+          <ol>
+            <li><b>JSP page</b> — Contains <code>&lt;%@ taglib ... %&gt;</code> and tags such as <code>&lt;c:if&gt;</code>.</li>
+            <li><b>TLD / tag files</b> — Describe available tags and attributes (<code>WEB-INF/tlds/*.tld</code> or <code>WEB-INF/tags/*.tag</code>).</li>
+            <li><b>Jasper translator</b> — Reads the directive, resolves the library, generates servlet code that invokes tag handlers.</li>
+            <li><b>Generated servlet</b> — Calls tag handler classes (e.g. JSTL <code>ForEachTag</code>) during <code>_jspService()</code>.</li>
+            <li><b>Browser</b> — Receives only HTML output; no trace of the directive or tag markup if the tag produces plain HTML.</li>
+          </ol>
+        </div>
+
+        <h4 class="sub-heading">Common JSTL taglib URIs (exam reference)</h4>
+        <table>
+          <tr><th>Library</th><th>Typical prefix</th><th>URI (JSTL 1.2)</th><th>Common tags</th></tr>
+          <tr><td>Core</td><td><code>c</code></td><td><code>http://java.sun.com/jsp/jstl/core</code></td><td><code>c:if</code>, <code>c:forEach</code>, <code>c:set</code>, <code>c:out</code></td></tr>
+          <tr><td>Formatting</td><td><code>fmt</code></td><td><code>http://java.sun.com/jsp/jstl/fmt</code></td><td><code>fmt:formatDate</code>, <code>fmt:formatNumber</code></td></tr>
+          <tr><td>SQL</td><td><code>sql</code></td><td><code>http://java.sun.com/jsp/jstl/sql</code></td><td><code>sql:query</code>, <code>sql:param</code></td></tr>
+          <tr><td>XML</td><td><code>x</code></td><td><code>http://java.sun.com/jsp/jstl/xml</code></td><td><code>x:parse</code>, <code>x:out</code></td></tr>
+        </table>
+        <p class="lab-meta">Jakarta EE / newer containers may also accept <code>jakarta.tags.core</code> URIs when using Jakarta JSTL — check your Tomcat and JSTL version in the lab.</p>
+
+        <h4 class="sub-heading">Example — JSTL core tags after taglib</h4>
+        <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"c"</span> uri=<span class="s">"http://java.sun.com/jsp/jstl/core"</span> %&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;c:if test=<span class="s">"${sessionScope.user != null}"</span>&gt;
+  &lt;p&gt;Hello &lt;c:out value=<span class="s">"${sessionScope.user}"</span> /&gt;&lt;/p&gt;
+&lt;/c:if&gt;
+&lt;c:forEach var=<span class="s">"row"</span> items=<span class="s">"${studentList}"</span>&gt;
+  &lt;tr&gt;&lt;td&gt;&lt;c:out value=<span class="s">"${row.name}"</span>/&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/c:forEach&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+
+        <h4 class="sub-heading">Example — custom tag with tagdir</h4>
+        <pre class="syntax">&lt;%@ taglib prefix=<span class="s">"ui"</span> tagdir=<span class="s">"/WEB-INF/tags"</span> %&gt;
+&lt;html&gt;&lt;body&gt;
+  &lt;ui:header title=<span class="s">"Student Portal"</span> /&gt;
+  &lt;!-- file: WEB-INF/tags/header.tag --&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+
+        <h4 class="sub-heading">Scriptlet vs JSTL tag (why taglib matters)</h4>
+        <table>
+          <tr><th>Approach</th><th>Syntax</th><th>Pros</th><th>Cons</th></tr>
+          <tr><td>Scriptlet</td><td><code>&lt;% for(...) { %&gt;</code></td><td>No extra JARs; works in basic syllabus labs</td><td>Java mixed in HTML; harder to maintain</td></tr>
+          <tr><td>JSTL (taglib)</td><td><code>&lt;c:forEach&gt;</code></td><td>Clean HTML; no Java in the view; reusable tags</td><td>Needs JSTL JARs + taglib directive + TLD mapping</td></tr>
+        </table>
+
+        <div class="callout warn">
+          <strong>Common mistakes</strong>
+          Using a tag without the taglib directive → “Cannot find tag library for URI”.
+          Wrong <code>uri</code> (typo or missing JAR in <code>WEB-INF/lib</code>).
+          Using prefix <code>jsp</code> — reserved and not allowed.
+          Confusing taglib with <code>&lt;jsp:include&gt;</code> — standard action tags need no taglib.
+        </div>
+
+        <div class="callout exam">
+          <strong>Oral exam lines</strong>
+          “The taglib directive registers a tag library by prefix and URI (or tagdir). It is processed at translation time.
+          JSTL provides standard tags for core logic and formatting; custom tags are defined in a TLD or as tag files under WEB-INF/tags.
+          Built-in jsp: action tags do not require a taglib directive.”
+        </div>
+
+        <p>JSTL replaces most scriptlets in modern JSP. University ICA still expects classic scriptlets, expressions, and action tags first — but taglib and JSTL are standard syllabus topics for viva and written exams.</p>
       </section>
 
       <!-- 6 TAGS + IMPLICIT -->
@@ -880,30 +996,83 @@ Square of 12 = &lt;%= square(12) %&gt;</pre>
           </tr>
         </table>
 
-        <h4>include directive vs jsp:include (must-score table)</h4>
+        <h3>6.1.1 What is <code>jsp:useBean</code>?</h3>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            <code>jsp:useBean</code> is a standard JSP <b>action tag</b> that creates a Java object (JavaBean) or finds an existing one
+            in a chosen scope (page, request, session, or application). After the tag runs, you can read and update bean properties
+            with <code>jsp:setProperty</code> and <code>jsp:getProperty</code> — without writing Java code in the page.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          <code>&lt;jsp:useBean id="name" class="fully.qualified.ClassName" scope="session"/&gt;</code>
+          locates a bean with the given <code>id</code> in the specified scope. If it does not exist, the container creates a new instance
+          using the no-arg constructor and stores it in that scope. The bean becomes a scripting variable with the same name as <code>id</code>.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points — jsp:useBean</h4>
+          <ol>
+            <li><b>Action tag</b> — Runs at <b>request time</b>, not at translation time (unlike directives).</li>
+            <li><b>No taglib needed</b> — Built-in <code>jsp:</code> tags are part of the JSP specification.</li>
+            <li><b>id</b> — Name of the bean variable in the JSP (required).</li>
+            <li><b>class</b> — Fully qualified Java class name (required unless using <code>type</code> with an existing bean).</li>
+            <li><b>scope</b> — Where the bean is stored: <code>page</code> (default), <code>request</code>, <code>session</code>, or <code>application</code>.</li>
+            <li><b>Find or create</b> — If a bean with the same <code>id</code> already exists in that scope, it is reused; otherwise a new object is created.</li>
+            <li><b>JavaBean rules</b> — Public no-arg constructor, private fields, public getters/setters (<code>getX</code> / <code>setX</code>).</li>
+            <li><b>MVC pattern</b> — Servlet loads data; JSP uses useBean to display the model (Student, Cart, Employee).</li>
+          </ol>
+        </div>
+
+        <h4 class="sub-heading">jsp:useBean attributes</h4>
         <table>
-          <tr><th></th><th>&lt;%@ include %&gt;</th><th>&lt;jsp:include&gt;</th></tr>
-          <tr><td>When</td><td>Translation time (static)</td><td>Request time (dynamic)</td></tr>
-          <tr><td>Servlets generated</td><td>One combined servlet</td><td>Separate resources, dispatched</td></tr>
-          <tr><td>Can include JSP that changes often</td><td>Parent may not see changes immediately</td><td>Always latest</td></tr>
-          <tr><td>Can pass parameters</td><td>No</td><td>Yes, <code>jsp:param</code></td></tr>
-          <tr><td>Typical use</td><td>copyright, taglibs, constants</td><td>header/nav that depends on session</td></tr>
+          <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
+          <tr><td><code>id</code></td><td>Yes</td><td>Bean name in the JSP and key in the chosen scope.</td></tr>
+          <tr><td><code>class</code></td><td>Usually yes</td><td>Full class name, e.g. <code>beans.Student</code>. Class must be on classpath (<code>WEB-INF/classes</code>).</td></tr>
+          <tr><td><code>scope</code></td><td>No</td><td><code>page</code> (default), <code>request</code>, <code>session</code>, or <code>application</code>.</td></tr>
+          <tr><td><code>type</code></td><td>No</td><td>Supertype or interface when bean already exists; used with <code>beanName</code> in advanced cases.</td></tr>
+          <tr><td><code>beanName</code></td><td>No</td><td>Indirect reference to a bean (rare in syllabus labs).</td></tr>
         </table>
 
-        <pre class="syntax">&lt;jsp:include page=<span class="s">"header.jsp"</span>&gt;
-  &lt;jsp:param name=<span class="s">"title"</span> value=<span class="s">"Results"</span> /&gt;
-&lt;/jsp:include&gt;
+        <h4 class="sub-heading">How jsp:useBean works (step by step)</h4>
+        <ol class="ica-algo">
+          <li>JSP reaches <code>&lt;jsp:useBean id="st" class="beans.Student" scope="session"/&gt;</code>.</li>
+          <li>Container checks session for attribute named <code>st</code>.</li>
+          <li>If found → reuse that Student object.</li>
+          <li>If not found → call <code>new Student()</code>, store in session as <code>st</code>.</li>
+          <li><code>&lt;jsp:setProperty name="st" property="*" /&gt;</code> calls setters from request parameters.</li>
+          <li><code>&lt;jsp:getProperty name="st" property="name"/&gt;</code> calls <code>getName()</code> and prints the value.</li>
+        </ol>
 
-&lt;jsp:forward page=<span class="s">"dashboard.jsp"</span>&gt;
-  &lt;jsp:param name=<span class="s">"role"</span> value=<span class="s">"student"</span> /&gt;
-&lt;/jsp:forward&gt;</pre>
+        <div class="diagram-desc">
+          <h4>Diagram — useBean flow</h4>
+          <ol>
+            <li><b>Browser</b> — Sends form data (name, marks) to the JSP.</li>
+            <li><b>jsp:useBean</b> — Finds or creates Student in session.</li>
+            <li><b>jsp:setProperty</b> — Maps parameters to bean setters.</li>
+            <li><b>jsp:getProperty</b> — Reads getters and writes HTML output.</li>
+            <li><b>Scope</b> — Bean stays in session for later pages (e.g. dashboard).</li>
+          </ol>
+        </div>
 
-        <h4>JavaBean rules (for useBean)</h4>
+        <h4 class="sub-heading">Companion tags — setProperty and getProperty</h4>
+        <table>
+          <tr><th>Tag</th><th>Purpose</th><th>Example</th></tr>
+          <tr><td><code>jsp:setProperty</code></td><td>Write bean property from param or value</td><td><code>property="*" </code> maps all matching request params</td></tr>
+          <tr><td><code>jsp:getProperty</code></td><td>Read bean property into HTML</td><td><code>property="name"</code> → calls <code>getName()</code></td></tr>
+        </table>
+
+        <h4 class="sub-heading">JavaBean rules (for useBean)</h4>
         <ul>
           <li>Public no-arg constructor.</li>
           <li>Private fields + public getters/setters named <code>getX</code> / <code>setX</code>.</li>
           <li>Implements <code>Serializable</code> if stored in session (recommended).</li>
           <li>Class is usually placed in a package, e.g. <code>beans.Student</code>.</li>
+          <li>Compile <code>Student.java</code> to <code>WEB-INF/classes/beans/Student.class</code> before running the JSP.</li>
         </ul>
         <pre class="syntax"><span class="k">package</span> beans;
 <span class="k">public class</span> Student <span class="k">implements</span> java.io.Serializable {
@@ -917,7 +1086,105 @@ Square of 12 = &lt;%= square(12) %&gt;</pre>
 }</pre>
         <pre class="syntax">&lt;jsp:useBean id=<span class="s">"st"</span> class=<span class="s">"beans.Student"</span> scope=<span class="s">"session"</span> /&gt;
 &lt;jsp:setProperty name=<span class="s">"st"</span> property=<span class="s">"*"</span> /&gt;
-Name: &lt;jsp:getProperty name=<span class="s">"st"</span> property=<span class="s">"name"</span> /&gt;</pre>
+Name: &lt;jsp:getProperty name=<span class="s">"st"</span> property=<span class="s">"name"</span> /&gt;
+Marks: &lt;jsp:getProperty name=<span class="s">"st"</span> property=<span class="s">"marks"</span> /&gt;</pre>
+
+        <div class="callout exam">
+          <strong>Oral exam — jsp:useBean</strong>
+          “useBean is a JSP action tag that instantiates or locates a JavaBean in page, request, session, or application scope.
+          setProperty sets fields from request parameters; getProperty prints getter values. The bean must follow JavaBean conventions and be compiled on the classpath.”
+        </div>
+
+        <h3>6.1.2 What is <code>jsp:include</code>?</h3>
+
+        <div class="theory-summary">
+          <h4>In simple words</h4>
+          <p>
+            <code>jsp:include</code> is a standard JSP <b>action tag</b> that inserts the output of another resource (JSP, HTML, or servlet)
+            into the current page at <b>runtime</b>. The included page runs as a separate request, executes its own logic,
+            and its HTML is merged into the parent response. Use it for headers, navigation bars, and footers that may change or depend on session data.
+          </p>
+        </div>
+
+        <div class="callout def">
+          <strong>Definition</strong>
+          <code>&lt;jsp:include page="nav.jsp" flush="true"/&gt;</code>
+          calls <code>RequestDispatcher.include()</code> on the server. The included resource is executed during the same HTTP request;
+          its output is written into the parent page’s response stream. The browser still receives one combined HTML page.
+        </div>
+
+        <div class="key-points">
+          <h4>Key points — jsp:include</h4>
+          <ol>
+            <li><b>Dynamic include</b> — Happens at <b>request time</b>, not at JSP translation time.</li>
+            <li><b>Separate resource</b> — Included JSP/servlet is compiled and run independently.</li>
+            <li><b>page attribute</b> — Relative path to the file to include (required).</li>
+            <li><b>flush attribute</b> — If <code>true</code>, flushes the output buffer before include (default is false in spec; often set true in examples).</li>
+            <li><b>jsp:param</b> — Can pass extra parameters to the included page nested inside the tag.</li>
+            <li><b>Not the same as include directive</b> — <code>&lt;%@ include file="..." %&gt;</code> is static (paste at compile time).</li>
+            <li><b>Typical use</b> — Header, menu, sidebar, footer that reuse layout across many JSPs.</li>
+          </ol>
+        </div>
+
+        <h4 class="sub-heading">jsp:include attributes</h4>
+        <table>
+          <tr><th>Attribute</th><th>Required</th><th>Description</th></tr>
+          <tr><td><code>page</code></td><td>Yes</td><td>URL of the resource to include (relative to current JSP), e.g. <code>nav.jsp</code>, <code>/common/header.jsp</code>.</td></tr>
+          <tr><td><code>flush</code></td><td>No</td><td><code>true</code> — flush buffer before include; <code>false</code> — default.</td></tr>
+        </table>
+
+        <h4 class="sub-heading">How jsp:include works (step by step)</h4>
+        <ol class="ica-algo">
+          <li>Parent JSP (e.g. <code>layout.jsp</code>) runs and reaches <code>&lt;jsp:include page="nav.jsp"/&gt;</code>.</li>
+          <li>Container pauses parent output and dispatches to <code>nav.jsp</code> on the same request.</li>
+          <li>Included page may read session, parameters, and write its own HTML.</li>
+          <li>Output of <code>nav.jsp</code> is inserted into the parent response.</li>
+          <li>Parent JSP continues and sends the full combined HTML to the browser.</li>
+        </ol>
+
+        <div class="diagram-desc">
+          <h4>Diagram — jsp:include flow</h4>
+          <ol>
+            <li><b>layout.jsp</b> — Main page starts writing HTML.</li>
+            <li><b>jsp:include</b> — Server calls <code>RequestDispatcher.include("nav.jsp")</code>.</li>
+            <li><b>nav.jsp</b> — Runs separately; may use session or <code>jsp:param</code> values.</li>
+            <li><b>Merged response</b> — nav output + rest of layout → one page in browser.</li>
+            <li><b>Browser</b> — Sees a single HTML document (user does not navigate to nav.jsp separately).</li>
+          </ol>
+        </div>
+
+        <pre class="syntax">&lt;!-- layout.jsp --&gt;
+&lt;html&gt;&lt;body&gt;
+&lt;jsp:include page=<span class="s">"nav.jsp"</span>&gt;
+  &lt;jsp:param name=<span class="s">"pageTitle"</span> value=<span class="s">"Results 2026"</span> /&gt;
+&lt;/jsp:include&gt;
+&lt;main&gt;Page content here&lt;/main&gt;
+&lt;/body&gt;&lt;/html&gt;</pre>
+
+        <h4 class="sub-heading">include directive vs jsp:include (must-score table)</h4>
+        <table>
+          <tr><th></th><th>&lt;%@ include %&gt;</th><th>&lt;jsp:include&gt;</th></tr>
+          <tr><td>When</td><td>Translation time (static)</td><td>Request time (dynamic)</td></tr>
+          <tr><td>Servlets generated</td><td>One combined servlet</td><td>Separate resources, dispatched</td></tr>
+          <tr><td>Can include JSP that changes often</td><td>Parent may not see changes immediately</td><td>Always latest</td></tr>
+          <tr><td>Can pass parameters</td><td>No</td><td>Yes, <code>jsp:param</code></td></tr>
+          <tr><td>Typical use</td><td>copyright, taglibs, constants</td><td>header/nav that depends on session</td></tr>
+        </table>
+
+        <div class="callout exam">
+          <strong>Oral exam — jsp:include</strong>
+          “jsp:include is a runtime action tag that includes another resource using RequestDispatcher.include.
+          It is dynamic — separate servlet/JSP runs on each request. The include directive is static — file content is pasted at translation time into one servlet.
+          jsp:include can pass parameters with jsp:param; the include directive cannot.”
+        </div>
+
+        <pre class="syntax">&lt;jsp:include page=<span class="s">"header.jsp"</span>&gt;
+  &lt;jsp:param name=<span class="s">"title"</span> value=<span class="s">"Results"</span> /&gt;
+&lt;/jsp:include&gt;
+
+&lt;jsp:forward page=<span class="s">"dashboard.jsp"</span>&gt;
+  &lt;jsp:param name=<span class="s">"role"</span> value=<span class="s">"student"</span> /&gt;
+&lt;/jsp:forward&gt;</pre>
 
         <div class="example-lab" data-example="action_include">
           <div class="lab-head">
@@ -1796,6 +2063,8 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
           <tr><td><code>&lt;%! member %&gt;</code></td><td>class member</td></tr>
           <tr><td><code>&lt;%@ page import="x" %&gt;</code></td><td><code>import x;</code></td></tr>
           <tr><td><code>&lt;%@ include file="h.jsp" %&gt;</code></td><td>contents of h.jsp pasted</td></tr>
+          <tr><td><code>&lt;%@ taglib prefix="c" uri="..." %&gt;</code></td><td>registers JSTL/custom tag library for prefix <code>c</code></td></tr>
+          <tr><td><code>&lt;c:forEach&gt;</code></td><td>tag handler code generated from TLD (JSTL)</td></tr>
           <tr><td><code>&lt;jsp:include page="h.jsp"/&gt;</code></td><td>runtime <code>RequestDispatcher.include</code></td></tr>
         </table>
         <h3>Likely theory questions</h3>
@@ -1805,9 +2074,11 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
           <li>Explain JSP life cycle. List methods and servlet equivalents.</li>
           <li>What are JSP elements? Explain with syntax and example.</li>
           <li>Explain page directive attributes.</li>
+          <li>Explain taglib directive — prefix, uri, tagdir. What is TLD? What is JSTL?</li>
           <li>Static vs dynamic include.</li>
           <li>List implicit objects with types.</li>
-          <li>Explain <code>jsp:useBean</code> with a program.</li>
+          <li>Explain <code>jsp:useBean</code> — find or create JavaBean, scopes, setProperty, getProperty.</li>
+          <li>Explain <code>jsp:include</code> — dynamic include vs include directive.</li>
           <li>Exception handling mechanisms in JSP.</li>
         </ul>
         <h3>2-mark rapid fire</h3>
@@ -1816,7 +2087,11 @@ http://localhost:8080/jsp/atm_withdraw.jsp?balance=5000&amount=2000</pre>
           <div class="card tight"><b>Default session?</b> true — HttpSession is created.</div>
           <div class="card tight"><b>out type?</b> javax.servlet.jsp.JspWriter</div>
           <div class="card tight"><b>exception available?</b> Only isErrorPage="true".</div>
+          <div class="card tight"><b>taglib directive?</b> Registers a tag library (prefix + uri or tagdir) at translation time.</div>
+          <div class="card tight"><b>JSTL core URI?</b> <code>http://java.sun.com/jsp/jstl/core</code> — tags like c:if, c:forEach.</div>
           <div class="card tight"><b>Who translates?</b> JSP container / Jasper.</div>
+          <div class="card tight"><b>jsp:useBean?</b> Action tag — find or create JavaBean in a scope (page/request/session/application).</div>
+          <div class="card tight"><b>jsp:include?</b> Runtime include via RequestDispatcher; separate resource runs and output is merged.</div>
           <div class="card tight"><b>MVC view?</b> JSP. Controller? Servlet.</div>
         </div>
         <div class="callout exam">
