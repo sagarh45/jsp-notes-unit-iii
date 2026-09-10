@@ -79,7 +79,7 @@
     html += "<p class='lab-meta'>Two separate files — the user types in the <b>HTML form</b>, clicks Submit, and the <b>JSP</b> reads data with <code>request.getParameter()</code>.</p>";
     if (window.JSP_HTML_FORMS) {
       html += "<h4 class='file-heading'>File 1 — HTML form — <code>forms/" + formFile + "</code></h4>";
-      html += "<pre class='syntax syntax-html'>" + JspRuntime.escapeHtml(JSP_HTML_FORMS.buildFormHtml(exId, ex)) + "</pre>";
+      html += "<pre class='syntax syntax-html'>" + JspRuntime.highlightHtml(JSP_HTML_FORMS.buildFormHtml(exId, ex)) + "</pre>";
     }
     html += "<h4 class='file-heading'>File 2 — JSP page — <code>" + ex.file + "</code></h4>";
     html += "<pre class='syntax'>" + JspRuntime.highlightJsp(ex.jsp) + "</pre>";
@@ -346,8 +346,10 @@
     const links = $$(".nav-link");
     const secs = $$(".section");
     let current = secs[0];
+    const topbarH = parseInt(getComputedStyle(document.documentElement).getPropertyValue("--topbar-h"), 10) || 84;
+    const threshold = topbarH + 24;
     secs.forEach(function (s) {
-      if (s.getBoundingClientRect().top < 120) current = s;
+      if (s.getBoundingClientRect().top < threshold) current = s;
     });
     links.forEach(function (a) {
       a.classList.toggle("active", current && a.getAttribute("href") === "#" + current.id);
@@ -377,6 +379,61 @@
     syncMenuState(!open);
   }
 
+  function initAutoHideHeader() {
+    const topbar = $("#topbar");
+    if (!topbar) return;
+    let lastY = window.scrollY || 0;
+    let ticking = false;
+
+    function setTopbarHeight() {
+      const h = isMobile() ? 56 : topbar.offsetHeight;
+      document.documentElement.style.setProperty("--topbar-h", h + "px");
+    }
+
+    function onScroll() {
+      if (!isMobile() || document.body.classList.contains("modal-open") || document.body.classList.contains("menu-open")) {
+        topbar.classList.remove("header-hidden");
+        return;
+      }
+      const y = window.scrollY || 0;
+      if (y < 16) {
+        topbar.classList.remove("header-hidden");
+      } else if (y > lastY + 8 && y > 72) {
+        topbar.classList.add("header-hidden");
+      } else if (y < lastY - 8) {
+        topbar.classList.remove("header-hidden");
+      }
+      lastY = y;
+    }
+
+    setTopbarHeight();
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(function () {
+          onScroll();
+          ticking = false;
+        });
+      }
+    }, { passive: true });
+    window.addEventListener("resize", setTopbarHeight);
+  }
+
+  function initSearch() {
+    const q = $("#q");
+    const qMobile = $("#qMobile");
+    function sync(from, to) {
+      if (from && to && to.value !== from.value) to.value = from.value;
+    }
+    function handleInput(e) {
+      filterNav(e.target.value);
+      if (e.target === q) sync(q, qMobile);
+      else sync(qMobile, q);
+    }
+    q && q.addEventListener("input", handleInput);
+    qMobile && qMobile.addEventListener("input", handleInput);
+  }
+
   function initMenu() {
     syncMenuState(!isMobile());
   }
@@ -384,6 +441,9 @@
   document.addEventListener("DOMContentLoaded", function () {
     wireLabs();
     initMenu();
+    initAutoHideHeader();
+    initSearch();
+    if (window.JspRuntime && JspRuntime.highlightStaticBlocks) JspRuntime.highlightStaticBlocks();
     $("#modalBack").addEventListener("click", function (e) {
       if (e.target.id === "modalBack" || e.target.classList.contains("close-x")) closeModal();
     });
@@ -393,8 +453,6 @@
         if (isMobile()) closeMenu();
       }
     });
-    const search = $("#q");
-    if (search) search.addEventListener("input", function () { filterNav(search.value); });
     $("#menuBtn") && $("#menuBtn").addEventListener("click", function (e) {
       e.stopPropagation();
       toggleMenu();

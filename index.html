@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
-  <header class="topbar">
+  <header class="topbar" id="topbar">
     <div class="brand">
       <div class="brand-mark">J</div>
-      <div>Unit-III · Java Server Pages <small>Advanced Java · Complete Notes + ICA Lab</small></div>
+      <div class="brand-text">Unit-III · JSP <small class="brand-sub">Advanced Java Notes</small></div>
     </div>
-    <label class="search">⌕ <input id="q" placeholder="Search topics in the sidebar…" /></label>
+    <label class="search search-top">⌕ <input id="q" placeholder="Search topics…" aria-label="Search topics" /></label>
     <div class="top-actions">
       <button class="btn btn-ghost menu-toggle" id="menuBtn" type="button" aria-expanded="false" aria-controls="sidebar">Menu</button>
       <button class="btn btn-ghost" id="resetSess">Reset simulator</button>
@@ -24,6 +24,7 @@
   <div class="layout">
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
     <aside class="sidebar" id="sidebar">
+      <label class="search search-sidebar">⌕ <input id="qMobile" placeholder="Search topics…" aria-label="Search topics mobile" /></label>
       <h4>Syllabus map</h4>
       <a class="nav-link" href="#home"><span class="nav-num">★</span> Overview</a>
       <a class="nav-link" href="#intro"><span class="nav-num">1</span> Introduction</a>

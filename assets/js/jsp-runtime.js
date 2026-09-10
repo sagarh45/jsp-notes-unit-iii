@@ -11,12 +11,49 @@
   }
 
   function highlightJsp(src) {
-    return escapeHtml(src)
-      .replace(/(&lt;%@[\s\S]*?%&gt;)/g, '<span class="k">$1</span>')
-      .replace(/(&lt;%--[\s\S]*?--%&gt;)/g, '<span class="c">$1</span>')
-      .replace(/(&lt;%![\s\S]*?%&gt;)/g, '<span class="t">$1</span>')
-      .replace(/(&lt;%=[\s\S]*?%&gt;)/g, '<span class="s">$1</span>')
-      .replace(/(&lt;%[\s\S]*?%&gt;)/g, '<span class="k">$1</span>');
+    const esc = escapeHtml(src);
+    const javaKw = /\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while|String|Integer|Double|Object|List|ArrayList|Math|System|out|println|print|request|response|session|application|pageContext|page|config|exception)\b/g;
+
+    function highlightJava(code) {
+      return code
+        .replace(javaKw, '<span class="jkw">$1</span>')
+        .replace(/(&quot;(?:\\.|[^&quot;\\])*&quot;|&#39;(?:\\.|[^&#39;\\])*&#39;)/g, '<span class="str">$1</span>')
+        .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="num">$1</span>');
+    }
+
+    return esc
+      .replace(/(&lt;%@[\s\S]*?%&gt;)/g, '<span class="dir">$1</span>')
+      .replace(/(&lt;%--[\s\S]*?--%&gt;)/g, '<span class="cmt">$1</span>')
+      .replace(/(&lt;%![\s\S]*?%&gt;)/g, function (m) {
+        return '<span class="decl">' + highlightJava(m) + '</span>';
+      })
+      .replace(/(&lt;%=[\s\S]*?%&gt;)/g, function (m) {
+        return '<span class="expr">' + highlightJava(m) + '</span>';
+      })
+      .replace(/(&lt;%[\s\S]*?%&gt;)/g, function (m) {
+        return '<span class="scr">' + highlightJava(m) + '</span>';
+      })
+      .replace(/(&lt;\/?jsp:[\w:-]+[^&gt;]*&gt;)/g, '<span class="jtag">$1</span>')
+      .replace(/(&lt;\/?[\w:-]+[^&gt;]*&gt;)/g, '<span class="htag">$1</span>')
+      .replace(/(&amp;[\w#]+;)/g, '<span class="ent">$1</span>');
+  }
+
+  function highlightHtml(src) {
+    const esc = escapeHtml(src);
+    return esc
+      .replace(/(&lt;!--[\s\S]*?--&gt;)/g, '<span class="cmt">$1</span>')
+      .replace(/(&lt;\/?[\w:-]+)/g, '<span class="htag">$1</span>')
+      .replace(/([\w:-]+=)(&quot;[^&quot;]*&quot;|&#39;[^&#39;]*&#39;)/g, '$1<span class="attr">$2</span>')
+      .replace(/(&gt;)/g, '<span class="htag">$1</span>')
+      .replace(/(&lt;%@[\s\S]*?%&gt;)/g, '<span class="dir">$1</span>')
+      .replace(/(&lt;%[\s\S]*?%&gt;)/g, '<span class="scr">$1</span>')
+      .replace(/(&lt;%= [\s\S]*?%&gt;)/g, '<span class="expr">$1</span>');
+  }
+
+  function highlightStaticBlocks() {
+    document.querySelectorAll(".content pre.syntax:not(.syntax-html)").forEach(function (el) {
+      el.innerHTML = highlightJsp(el.textContent);
+    });
   }
 
   function tokenize(jsp) {
@@ -310,7 +347,7 @@
   }
 
   global.JspRuntime = {
-    tokenize, run, highlightJsp, escapeHtml, translateToServlet,
+    tokenize, run, highlightJsp, highlightHtml, highlightStaticBlocks, escapeHtml, translateToServlet,
     resetSession() {
       Object.keys(sessionStore).forEach((k) => delete sessionStore[k]);
     },

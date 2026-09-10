@@ -2,9 +2,11 @@
 
 Interactive study notes for **Advanced Java (JSP)** covering theory, diagrams, Tomcat 11 deployment, and 4 ICA practicals with Trace / Source / Deploy / Run online labs.
 
-## Live demo
+## Live demo (public — no login required)
 
-**https://jsp-notes.vercel.app**
+**https://jsp-vercel.vercel.app**
+
+Also: **https://jsp-notes.vercel.app**
 
 GitHub: **https://github.com/sagarh45/jsp-notes-unit-iii**
 
