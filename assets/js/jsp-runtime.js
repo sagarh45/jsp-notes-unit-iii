@@ -12,7 +12,7 @@
 
   function highlightJsp(src) {
     const esc = escapeHtml(src);
-    const javaKw = /\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while|String|Integer|Double|Object|List|ArrayList|Math|System|out|println|print|request|response|session|application|pageContext|page|config|exception)\b/g;
+    const javaKw = /\b(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|do|double|else|extends|final|finally|float|for|if|implements|import|instanceof|int|interface|long|native|new|null|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while|String|Integer|Double|Object|List|ArrayList|Math|System|out|println|print|request|response|session|application|pageContext|page|config|exception|PrintWriter|HttpServletRequest|HttpServletResponse|HttpServlet|void|doGet|doPost)\b/g;
 
     function highlightJava(code) {
       return code
@@ -21,21 +21,40 @@
         .replace(/\b(\d+(?:\.\d+)?)\b/g, '<span class="num">$1</span>');
     }
 
-    return esc
-      .replace(/(&lt;%@[\s\S]*?%&gt;)/g, '<span class="dir">$1</span>')
-      .replace(/(&lt;%--[\s\S]*?--%&gt;)/g, '<span class="cmt">$1</span>')
-      .replace(/(&lt;%![\s\S]*?%&gt;)/g, function (m) {
-        return '<span class="decl">' + highlightJava(m) + '</span>';
-      })
-      .replace(/(&lt;%=[\s\S]*?%&gt;)/g, function (m) {
-        return '<span class="expr">' + highlightJava(m) + '</span>';
-      })
-      .replace(/(&lt;%[\s\S]*?%&gt;)/g, function (m) {
-        return '<span class="scr">' + highlightJava(m) + '</span>';
-      })
-      .replace(/(&lt;\/?jsp:[\w:-]+[^&gt;]*&gt;)/g, '<span class="jtag">$1</span>')
-      .replace(/(&lt;\/?[\w:-]+[^&gt;]*&gt;)/g, '<span class="htag">$1</span>')
-      .replace(/(&amp;[\w#]+;)/g, '<span class="ent">$1</span>');
+    function highlightHtmlText(code) {
+      return code
+        .replace(/(&lt;\/?[\w:-]+[^&gt;]*&gt;)/g, '<span class="htag">$1</span>')
+        .replace(/(&amp;[\w#]+;)/g, '<span class="ent">$1</span>');
+    }
+
+    function wrapJsp(openLen, raw, cls) {
+      const open = raw.slice(0, openLen);
+      const body = raw.slice(openLen, -4);
+      const close = raw.slice(-4);
+      return '<span class="jsp-delim ' + cls + '">' + open + '</span>' +
+        highlightJava(body) +
+        '<span class="jsp-delim ' + cls + '">' + close + '</span>';
+    }
+
+    const re = /(&lt;%--[\s\S]*?--%&gt;|&lt;%@[\s\S]*?%&gt;|&lt;%![\s\S]*?%&gt;|&lt;%=[\s\S]*?%&gt;|&lt;%[\s\S]*?%&gt;)/g;
+    let out = "";
+    let last = 0;
+    let m;
+    while ((m = re.exec(esc))) {
+      if (m.index > last) {
+        out += highlightHtmlText(highlightJava(esc.slice(last, m.index)));
+      }
+      const raw = m[0];
+      if (raw.indexOf("&lt;%--") === 0) out += '<span class="cmt">' + raw + '</span>';
+      else if (raw.indexOf("&lt;%@") === 0) out += '<span class="dir">' + raw + '</span>';
+      else if (raw.indexOf("&lt;%!") === 0) out += wrapJsp(6, raw, "decl-delim");
+      else if (raw.indexOf("&lt;%=") === 0) out += wrapJsp(6, raw, "expr-delim");
+      else out += wrapJsp(5, raw, "scr-delim");
+      last = m.index + raw.length;
+    }
+    if (last < esc.length) out += highlightHtmlText(highlightJava(esc.slice(last)));
+    if (!out) out = highlightJava(esc);
+    return out;
   }
 
   function highlightHtml(src) {
